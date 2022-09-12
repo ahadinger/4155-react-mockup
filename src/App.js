@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBLQfsdho-FW3f2lJuUIXFzfwWgsDDBCaw&callback=initMap"></script>
 function App() {
   return (
     <div className="App">
