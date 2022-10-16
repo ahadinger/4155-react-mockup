@@ -1,6 +1,7 @@
 import React from 'react';
 import { GoogleMap, LoadScript, MarkerF, PolylineF } from '@react-google-maps/api';
 import BusStop from './images/small-circle-2.png';
+import PopUp from './Popup';
 import stops from './stops.json'
 import green from './greenroute.json';
 import silver from './silverroute.json';
@@ -12,20 +13,50 @@ export const MapContainer = () => {
     width: "100%"
   };
   
-  const defaultCenter = {
+  const defaultCenter = { //TODO change to user's position
     lat: 35.308053, lng: -80.733733
   }
   
+  function getPopUpForStop (item) {
+    const name = item.name;
+    const route = item.route;
+    //const data = getDataForStop(name)
+    return (
+      <PopUp title={{name}} 
+        body = {
+          <Container>
+            <Row>
+              <Col>Route</Col>
+              <Col>{route}</Col>
+            </Row>
+            <Row>
+              <Col>Next Bus</Col>
+              <Col>5 minutes</Col>
+            </Row>
+          </Container>
+        }
+      />
+    );
+  }
+
+  function togglePopUp (item) {
+    const position = item.position;
+
+  }
 
   const getStopsContent = stops => {
     let content = [];
 
     for (let i = 0; i < stops.length; i++) {
       const item = stops[i];
+      const name = item.name;
+      
+      
       content.push(
       <MarkerF
         icon={BusStop}
         position={item.position}
+        onClick={togglePopUp(item)}
       />
       );
     }
@@ -62,8 +93,8 @@ export const MapContainer = () => {
 
   return (
     
-     <LoadScript
-       googleMapsApiKey='AIzaSyBLQfsdho-FW3f2lJuUIXFzfwWgsDDBCaw'>
+      <LoadScript
+        googleMapsApiKey='AIzaSyBLQfsdho-FW3f2lJuUIXFzfwWgsDDBCaw'>
         
         <GoogleMap
           options={{
@@ -90,7 +121,7 @@ export const MapContainer = () => {
           />
 
         </GoogleMap>
-     </LoadScript>
+      </LoadScript>
   )
 }
 
