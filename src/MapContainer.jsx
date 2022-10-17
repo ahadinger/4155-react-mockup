@@ -1,10 +1,14 @@
-import React from 'react';
-import { GoogleMap, LoadScript, MarkerF, PolylineF } from '@react-google-maps/api';
+import React, { useState } from 'react';
+import { GoogleMap, LoadScript, MarkerF, PolylineF, InfoWindow } from '@react-google-maps/api';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
 import BusStop from './images/small-circle-2.png';
-import PopUp from './Popup';
 import stops from './stops.json'
 import green from './greenroute.json';
 import silver from './silverroute.json';
+
 
 export const MapContainer = () => {
   
@@ -13,57 +17,11 @@ export const MapContainer = () => {
     width: "100%"
   };
   
+
   const defaultCenter = { //TODO change to user's position
     lat: 35.308053, lng: -80.733733
   }
   
-  function getPopUpForStop (item) {
-    const name = item.name;
-    const route = item.route;
-    //const data = getDataForStop(name)
-    return (
-      <PopUp title={{name}} 
-        body = {
-          <Container>
-            <Row>
-              <Col>Route</Col>
-              <Col>{route}</Col>
-            </Row>
-            <Row>
-              <Col>Next Bus</Col>
-              <Col>5 minutes</Col>
-            </Row>
-          </Container>
-        }
-      />
-    );
-  }
-
-  function togglePopUp (item) {
-    const position = item.position;
-
-  }
-
-  const getStopsContent = stops => {
-    let content = [];
-
-    for (let i = 0; i < stops.length; i++) {
-      const item = stops[i];
-      const name = item.name;
-      
-      
-      content.push(
-      <MarkerF
-        icon={BusStop}
-        position={item.position}
-        onClick={togglePopUp(item)}
-      />
-      );
-    }
-    return content;
-  };
-  
-
   const greenPath = green;
   const silverPath = silver;
   
@@ -90,6 +48,32 @@ export const MapContainer = () => {
   const onLoad = polyline => {
     console.log('polyline: ', polyline)
   };
+  
+  const [selectedStop, setSelectedStop] = useState(null);
+
+  const getStopsContent = stops => {
+    let content = [];
+
+    for (let i = 0; i < stops.length; i++) {
+      const item = stops[i];
+      
+      content.push(
+      <MarkerF
+        icon={BusStop}
+        position={item.position}
+        onClick={() => {
+          setSelectedStop(item);
+        }}
+      >
+      
+      </MarkerF>
+      );
+    }
+    return content;
+  };
+  
+
+ 
 
   return (
     
@@ -119,7 +103,25 @@ export const MapContainer = () => {
           path={silverPath}
           options={silverOptions}
           />
-
+          {selectedStop && (
+        <InfoWindow
+          position={selectedStop.position}
+          >
+            <Container>
+              <Row>
+                <Col>{selectedStop.name}</Col>
+              </Row>
+              <Row>
+                <Col>Route</Col>
+                <Col>{selectedStop.route}</Col>
+              </Row>
+              <Row>
+                <Col>Next Bus</Col>
+                <Col>5 minutes</Col>
+              </Row>
+            </Container>
+        </InfoWindow>
+      )}
         </GoogleMap>
       </LoadScript>
   )

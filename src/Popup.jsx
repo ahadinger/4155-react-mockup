@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import Card from 'react-bootstrap/Card';
-import stops from './stops.json'
 
 
-export default class PopUp extends Component {
-
+export default class PopUp extends Component {    
     render() {
         return (
         <Card>
