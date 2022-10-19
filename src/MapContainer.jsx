@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GoogleMap, LoadScript, MarkerF, PolylineF, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, MarkerF, PolylineF, InfoWindowF } from '@react-google-maps/api';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -65,15 +65,32 @@ export const MapContainer = () => {
           setSelectedStop(item);
         }}
       >
-      
+        {selectedStop === item ?  (
+          <InfoWindowF
+            onCloseClick={() => setSelectedStop(null)}
+            position={selectedStop.position}
+            >
+              <Container>
+                <Row>
+                  <Col>{selectedStop.name}</Col>
+                </Row>
+                <Row>
+                  <Col>Route</Col>
+                  <Col>{selectedStop.route}</Col>
+                </Row>
+                <Row>
+                  <Col>Next Bus</Col>
+                  <Col>5 minutes</Col>
+                </Row>
+              </Container>
+          </InfoWindowF>
+        ) : null}
       </MarkerF>
       );
     }
     return content;
   };
   
-
- 
 
   return (
     
@@ -87,6 +104,7 @@ export const MapContainer = () => {
               streetViewControl: false,
               disableDefaultUI: true
             }}
+          onClick={() => setSelectedStop(null)}
           mapContainerStyle={mapStyles}
           zoom={16}
           center={defaultCenter}
@@ -103,28 +121,10 @@ export const MapContainer = () => {
           path={silverPath}
           options={silverOptions}
           />
-          {selectedStop && (
-        <InfoWindow
-          position={selectedStop.position}
-          >
-            <Container>
-              <Row>
-                <Col>{selectedStop.name}</Col>
-              </Row>
-              <Row>
-                <Col>Route</Col>
-                <Col>{selectedStop.route}</Col>
-              </Row>
-              <Row>
-                <Col>Next Bus</Col>
-                <Col>5 minutes</Col>
-              </Row>
-            </Container>
-        </InfoWindow>
-      )}
         </GoogleMap>
       </LoadScript>
   )
 }
+
 
 export default MapContainer;
