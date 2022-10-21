@@ -16,14 +16,9 @@ export const MapContainer = () => {
   
   const [selectedStop, setSelectedStop] = useState(null);
 
-  const getStopsContent = stops => {
-    let content = [];
-
-    for (let i = 0; i < stops.length; i++) {
-      const item = stops[i];
+  const getStopsContent = stops => stops.map(item=>{
       
-      content.push(
-      <MarkerF
+      return <MarkerF
         icon={BusStop}
         position={item.position}
         onClick={() => {
@@ -51,11 +46,8 @@ export const MapContainer = () => {
           </InfoWindowF>
         ) : null}
       </MarkerF>
-      );
-    }
-    return content;
-  };
-  
+  });
+
 
   return (
     
