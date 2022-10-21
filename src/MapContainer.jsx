@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, process } from 'react';
 import { GoogleMap, LoadScript, MarkerF, PolylineF, InfoWindowF } from '@react-google-maps/api';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
@@ -8,7 +8,6 @@ import BusStop from './images/small-circle-2.png';
 import stops from './stops.json'
 import green from './greenroute.json';
 import silver from './silverroute.json';
-
 
 export const MapContainer = () => {
   
@@ -95,7 +94,8 @@ export const MapContainer = () => {
   return (
     
       <LoadScript
-        googleMapsApiKey='AIzaSyBLQfsdho-FW3f2lJuUIXFzfwWgsDDBCaw'>
+        googleMapsApiKey = {process.env.REACT_APP_MAP_API_KEY}
+      >
         
         <GoogleMap
           options={{
