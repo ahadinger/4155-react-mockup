@@ -102,7 +102,8 @@ export const MapContainer = () => {
               mapTypeControl: false,
               StreetViewPanorama: false,
               streetViewControl: false,
-              disableDefaultUI: true
+              disableDefaultUI: true,
+              gestureHandling: "greedy"
             }}
           onClick={() => setSelectedStop(null)}
           mapContainerStyle={mapStyles}
