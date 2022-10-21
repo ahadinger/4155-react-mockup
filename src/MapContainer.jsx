@@ -6,44 +6,10 @@ import Col from 'react-bootstrap/Col';
 
 import BusStop from './images/small-circle-2.png';
 import stops from './stops.json'
-import green from './greenroute.json';
-import silver from './silverroute.json';
-
+import greenPath from './greenroute.json';
+import silverPath from './silverroute.json';
+import { silverOptions,greenOptions,mapStyles,defaultCenter } from './constants/map';
 export const MapContainer = () => {
-  
-  const mapStyles = {        
-    height: "100vh",
-    width: "100%"
-  };
-  
-
-  const defaultCenter = { //TODO change to user's position
-    lat: 35.308053, lng: -80.733733
-  }
-  
-  const greenPath = green;
-  const silverPath = silver;
-  
-  const greenOptions = {
-    strokeColor: '#007c00',
-    strokeOpacity: 0.8,
-    strokeWeight: 5,
-    clickable: false,
-    draggable: false,
-    editable: false,
-    visible: true,
-  };
-  
-  const silverOptions = {
-    strokeColor: '#a8a8a8',
-    strokeOpacity: 0.8,
-    strokeWeight: 5,
-    clickable: false,
-    draggable: false,
-    editable: false,
-    visible: true,
-  };
-
   const onLoad = polyline => {
     console.log('polyline: ', polyline)
   };
