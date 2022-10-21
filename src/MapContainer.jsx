@@ -44,6 +44,13 @@ export const MapContainer = () => {
     visible: true,
   };
 
+  const CAMPUS_BOUNDS = {
+    north: 35.315439301120726,
+    south: 35.29918909848325,
+    west: -80.75176478679214,
+    east: -80.71247424385233,
+  };
+
   const onLoad = polyline => {
     console.log('polyline: ', polyline)
   };
@@ -103,7 +110,11 @@ export const MapContainer = () => {
               StreetViewPanorama: false,
               streetViewControl: false,
               disableDefaultUI: true,
-              gestureHandling: "greedy"
+              gestureHandling: "greedy",
+              restriction: {
+                latLngBounds: CAMPUS_BOUNDS,
+                strictBounds: false
+              }
             }}
           onClick={() => setSelectedStop(null)}
           mapContainerStyle={mapStyles}
@@ -122,6 +133,7 @@ export const MapContainer = () => {
           path={silverPath}
           options={silverOptions}
           />
+
         </GoogleMap>
       </LoadScript>
   )
