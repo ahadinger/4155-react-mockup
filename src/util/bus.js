@@ -1,4 +1,4 @@
-const BusImage = new Image(15, 15);
+const BusImage = new Image(20, 20);
 BusImage.src = "/ic_bus_2019_white.png"
 const CircleImage = new Image(60, 60)
 CircleImage.src = "/circle_big_w_arrow_white.png"
@@ -27,7 +27,7 @@ export const getCorrectedBusStyle = (busLocation) => {
     busCtx.drawImage(rotCanvas, 0, 0)
 
 
-    const r = busCanvas.width * (0.3 - (+50 / 1000));
+    const r = busCanvas.width * (0.3 - (0 / 1000));
     const arcX = busCanvas.width / 2;
     const arcY = busCanvas.height / 2;
     busCtx.beginPath();
@@ -47,6 +47,6 @@ export const getCorrectedBusStyle = (busLocation) => {
     busCtx.drawImage(rotCanvas, (busCanvas.width-BusImage.width)/2,(busCanvas.height-BusImage.height)/2)
     
 
-    return { url: busCanvas.toDataURL('image/png'), width: busCanvas.width, height: busCanvas.height }
+    return { url: busCanvas.toDataURL('image/png'), width: busCanvas.width/2, height: busCanvas.height/2 }
     // console.log(rotCanvas)
 }

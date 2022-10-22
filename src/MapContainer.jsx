@@ -35,7 +35,7 @@ export const MapContainer = () => {
     setLocations(Object.values(json).flat());
   };
   useEffect(() => {
-    setInterval(() => getBusLocations().then(handleLocations), 500);
+    setInterval(() => getBusLocations().then(handleLocations), 1000);
     getBusLocations().then(handleLocations);
   }, []);
 
@@ -79,13 +79,13 @@ export const MapContainer = () => {
         id="rotCanvas"
         width={60}
         height={60}
-        style={{ display: "none" }}
+        // style={{ display: "none" }}
       ></canvas>
       <canvas
         id="busCanvas"
         width={60}
         height={60}
-        style={{ display: "none" }}
+        // style={{ display: "none" }}
       ></canvas>
 
       <LoadScript googleMapsApiKey={process.env.REACT_APP_MAP_API_KEY}>
