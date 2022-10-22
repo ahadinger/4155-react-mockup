@@ -1,4 +1,4 @@
-import React, { useState, process } from "react";
+import React, { useState, process, Fragment } from "react";
 import {
   GoogleMap,
   LoadScript,
@@ -33,10 +33,9 @@ export const MapContainer = () => {
 
   const handleLocations = (json) => {
     setLocations(Object.values(json).flat());
-    console.log(json)
   };
   useEffect(() => {
-    setInterval(() => getBusLocations().then(handleLocations), 5000);
+    setInterval(() => getBusLocations().then(handleLocations), 500);
     getBusLocations().then(handleLocations);
   }, []);
 
@@ -75,26 +74,45 @@ export const MapContainer = () => {
     });
 
   return (
-    <LoadScript googleMapsApiKey={process.env.REACT_APP_MAP_API_KEY}>
-      <GoogleMap
-        options={{
-          mapTypeControl: false,
-          StreetViewPanorama: false,
-          streetViewControl: false,
-          disableDefaultUI: true,
-        }}
-        onClick={() => setSelectedStop(null)}
-        mapContainerStyle={mapStyles}
-        zoom={16}
-        center={defaultCenter}
-      >
-        {getStopsContent(stops)}
+    <Fragment>
+      <canvas
+        id="rotCanvas"
+        width={60}
+        height={60}
+        style={{ display: "none" }}
+      ></canvas>
+      <canvas
+        id="busCanvas"
+        width={60}
+        height={60}
+        style={{ display: "none" }}
+      ></canvas>
 
-        <PolylineF onLoad={onLoad} path={greenPath} options={greenOptions} />
-        <PolylineF onLoad={onLoad} path={silverPath} options={silverOptions} />
-        <BusLocations locations={locations}/>
-      </GoogleMap>
-    </LoadScript>
+      <LoadScript googleMapsApiKey={process.env.REACT_APP_MAP_API_KEY}>
+        <GoogleMap
+          options={{
+            mapTypeControl: false,
+            StreetViewPanorama: false,
+            streetViewControl: false,
+            disableDefaultUI: true,
+          }}
+          onClick={() => setSelectedStop(null)}
+          mapContainerStyle={mapStyles}
+          zoom={16}
+          center={defaultCenter}
+        >
+          {getStopsContent(stops)}
+
+          <PolylineF onLoad={onLoad} path={greenPath} options={greenOptions} />
+          <PolylineF
+            onLoad={onLoad}
+            path={silverPath}
+            options={silverOptions}
+          />
+          <BusLocations locations={locations} />
+        </GoogleMap>
+      </LoadScript>
+    </Fragment>
   );
 };
 

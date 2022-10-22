@@ -1,20 +1,26 @@
-import BusIcon from '../images/ic_bus_2019_white.png'
-import BusStop from '../images/small-circle.png'
 
-import { MarkerF } from '@react-google-maps/api';
-export const BusLocations = ({locations}) => {
+import { MarkerF } from "@react-google-maps/api";
+import { getCorrectedBusStyle } from "../util/bus";
+export const BusLocations = ({ locations }) => {
   //todo: fetch from api, then update state somehow???????
-    return Object.values(locations).map(bus=>{
-        return (
-          <MarkerF
-            icon={{url:BusIcon,scaledSize:{height:50,width:50}}}
-            position={{lat:parseFloat(bus.latitude),lng:parseFloat(bus.longitude)}}
-            
-          >
-           
-          </MarkerF>
-        );
-      });
 
-    
+  return Object.values(locations)
+    .map((bus) => {
+      const busIcon = getCorrectedBusStyle(bus);
+      return (
+        <MarkerF
+          options={{
+            optimized: false,
+            icon: {
+              url: busIcon.url,
+              size: { width: busIcon.width, height: busIcon.height },
+            },
+            position: {
+              lat: parseFloat(bus.latitude),
+              lng: parseFloat(bus.longitude),
+            },
+          }}
+        ></MarkerF>
+      );
+    });
 };
