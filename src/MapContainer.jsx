@@ -39,6 +39,13 @@ export const MapContainer = () => {
   },[loaded]);
   const [markers, setMarkers] = useState({});
 
+  const CAMPUS_BOUNDS = {
+    north: 35.315439301120726,
+    south: 35.29918909848325,
+    west: -80.75176478679214,
+    east: -80.71247424385233,
+  };
+
   const [selectedStop, setSelectedStop] = useState(null);
   const [locations, setLocations] = useState([]);
 
@@ -123,12 +130,19 @@ export const MapContainer = () => {
       <LoadScript googleMapsApiKey={process.env.REACT_APP_MAP_API_KEY}>
         <GoogleMap
           options={{
-            mapTypeControl: false,
-            StreetViewPanorama: false,
-            streetViewControl: false,
-            disableDefaultUI: true,
-          }}
+              mapTypeControl: false,
+              StreetViewPanorama: false,
+              streetViewControl: false,
+              disableDefaultUI: true,
+              gestureHandling: "greedy",
+              restriction: {
+                latLngBounds: CAMPUS_BOUNDS,
+                strictBounds: false
+              },
+
+            }}
           onLoad={onLoad}
+
           onClick={() => setSelectedStop(null)}
           mapContainerStyle={mapStyles}
           zoom={16}
@@ -141,7 +155,6 @@ export const MapContainer = () => {
             path={silverPath}
             options={silverOptions}
           />
-          {/* <BusLocations locations={locations} /> */}
         </GoogleMap>
       </LoadScript>
     </Fragment>
