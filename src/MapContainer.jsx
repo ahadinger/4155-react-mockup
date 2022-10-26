@@ -1,48 +1,43 @@
-import React, { useState, process } from 'react';
-import { GoogleMap, LoadScript, MarkerF, PolylineF, InfoWindowF } from '@react-google-maps/api';
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
+import React, { useState, process, Fragment } from "react";
+import {
+  GoogleMap,
+  LoadScript,
+  MarkerF,
+  PolylineF,
+  InfoWindowF,
+} from "@react-google-maps/api";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
-import BusStop from './images/small-circle-2.png';
-import stops from './stops.json'
-import green from './greenroute.json';
-import silver from './silverroute.json';
+import BusStop from "./images/small-circle-2.png";
+import stops from "./stops.json";
+import greenPath from "./greenroute.json";
+import silverPath from "./silverroute.json";
+import {
+  silverOptions,
+  greenOptions,
+  mapStyles,
+  defaultCenter,
+} from "./constants/map";
+import { getBusLocations } from "./util/api";
+import { useEffect } from "react";
+import { useCallback } from "react";
+import { getBusMarkerData } from "./util/bus";
+import { SlidingMarker } from "./util/SlidingMarker";
+
+
+
 
 export const MapContainer = () => {
-  
-  const mapStyles = {        
-    height: "100vh",
-    width: "100%"
-  };
-  
-
-  const defaultCenter = { //TODO change to user's position
-    lat: 35.308053, lng: -80.733733
-  }
-  
-  const greenPath = green;
-  const silverPath = silver;
-  
-  const greenOptions = {
-    strokeColor: '#007c00',
-    strokeOpacity: 0.8,
-    strokeWeight: 5,
-    clickable: false,
-    draggable: false,
-    editable: false,
-    visible: true,
-  };
-  
-  const silverOptions = {
-    strokeColor: '#a8a8a8',
-    strokeOpacity: 0.8,
-    strokeWeight: 5,
-    clickable: false,
-    draggable: false,
-    editable: false,
-    visible: true,
-  };
+  const [map, setMap] = React.useState(null)
+  const [loaded,setLoaded] =  useState(false)
+  const onLoad = useCallback((map) => {
+    setLoaded(true);
+    setMap(map);
+    console.log(loaded)
+  },[loaded]);
+  const [markers, setMarkers] = useState({});
 
   const CAMPUS_BOUNDS = {
     north: 35.315439301120726,
@@ -51,30 +46,52 @@ export const MapContainer = () => {
     east: -80.71247424385233,
   };
 
-  const onLoad = polyline => {
-    console.log('polyline: ', polyline)
-  };
-  
   const [selectedStop, setSelectedStop] = useState(null);
+  const [locations, setLocations] = useState([]);
 
-  const getStopsContent = stops => {
-    let content = [];
 
-    for (let i = 0; i < stops.length; i++) {
-      const item = stops[i];
-      
-      content.push(
-      <MarkerF
-        icon={BusStop}
-        position={item.position}
-        onClick={() => {
-          setSelectedStop(item);
-        }}
-      >
-        {selectedStop === item ?  (
-          <InfoWindowF
-            onCloseClick={() => setSelectedStop(null)}
-            position={selectedStop.position}
+  const handleLocations = (json) => {
+    setLocations(Object.values(json).flat());
+  };
+  useEffect(() => {
+    setInterval(() => getBusLocations().then(handleLocations), 2000);
+    getBusLocations().then(handleLocations);
+  }, []);
+
+
+  useEffect(() => {
+    if(!loaded) return;
+      // eslint-disable-next-line no-undef
+
+    const markerData = getBusMarkerData(locations)
+
+    markerData.forEach(m=>{
+      if(markers[m.id]){
+        markers[m.id].updateMarkerPosition(m)
+        console.log('exists')
+      }else{
+        // eslint-disable-next-line no-undef
+
+        markers[m.id] = new SlidingMarker({...m,map});
+      }
+    })
+  }, [locations,loaded,markers,map]);
+
+
+  const getStopsContent = (stops) =>
+    stops.map((item) => {
+      return (
+        <MarkerF
+          icon={BusStop}
+          position={item.position}
+          onClick={() => {
+            setSelectedStop(item);
+          }}
+        >
+          {selectedStop === item ? (
+            <InfoWindowF
+              onCloseClick={() => setSelectedStop(null)}
+              position={selectedStop.position}
             >
               <Container>
                 <Row>
@@ -89,21 +106,28 @@ export const MapContainer = () => {
                   <Col>5 minutes</Col>
                 </Row>
               </Container>
-          </InfoWindowF>
-        ) : null}
-      </MarkerF>
+            </InfoWindowF>
+          ) : null}
+        </MarkerF>
       );
-    }
-    return content;
-  };
-  
+    });
 
   return (
-    
-      <LoadScript
-        googleMapsApiKey = {process.env.REACT_APP_MAP_API_KEY}
-      >
-        
+    <Fragment>
+      <canvas
+        id="rotCanvas"
+        width={60}
+        height={60}
+        style={{ display: "none" }}
+      ></canvas>
+      <canvas
+        id="busCanvas"
+        width={60}
+        height={60}
+        style={{ display: "none" }}
+      ></canvas>
+
+      <LoadScript googleMapsApiKey={process.env.REACT_APP_MAP_API_KEY}>
         <GoogleMap
           options={{
               mapTypeControl: false,
@@ -116,28 +140,25 @@ export const MapContainer = () => {
                 strictBounds: false
               }
             }}
+          onLoad={onLoad}
+
           onClick={() => setSelectedStop(null)}
           mapContainerStyle={mapStyles}
           zoom={16}
           center={defaultCenter}
-          >
-          {getStopsContent(stops)} 
+        >
+          {getStopsContent(stops)}
 
+          <PolylineF onLoad={onLoad} path={greenPath} options={greenOptions} />
           <PolylineF
-          onLoad={onLoad}
-          path={greenPath}
-          options={greenOptions}
-          />
-          <PolylineF
-          onLoad={onLoad}
-          path={silverPath}
-          options={silverOptions}
+            path={silverPath}
+            options={silverOptions}
           />
 
         </GoogleMap>
       </LoadScript>
-  )
-}
-
+    </Fragment>
+  );
+};
 
 export default MapContainer;
