@@ -138,8 +138,7 @@ export const MapContainer = () => {
               restriction: {
                 latLngBounds: CAMPUS_BOUNDS,
                 strictBounds: false
-              },
-
+              }
             }}
           onLoad={onLoad}
 
@@ -155,6 +154,7 @@ export const MapContainer = () => {
             path={silverPath}
             options={silverOptions}
           />
+
         </GoogleMap>
       </LoadScript>
     </Fragment>
