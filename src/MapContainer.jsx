@@ -6,9 +6,6 @@ import {
   PolylineF,
   InfoWindowF,
 } from "@react-google-maps/api";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 
 import BusStop from "./images/small-circle-2.png";
 import stops from "./stops.json";
@@ -25,9 +22,8 @@ import { useEffect } from "react";
 import { useCallback } from "react";
 import { getBusMarkerData } from "./util/bus";
 import { SlidingMarker } from "./util/SlidingMarker";
-import { StopsPopup } from "./util/StopsPopup";
 
-import './App.css';
+import { showStopPopup } from "./util/stopsPopup";
 
 export const MapContainer = () => {
   const [map, setMap] = React.useState(null)
@@ -98,27 +94,7 @@ export const MapContainer = () => {
                 maxWidth: 350
               }}
             >
-              <Container>
-                <Row>
-                  <Col className ="Card-title"><h5>{selectedStop.name}</h5></Col>
-                </Row>
-                <Row className ="Card-cell">
-                  <Col className ="Card-bold">Route</Col>
-                  <Col className = {selectedStop.route} style={{ textAlign: 'right' }}>{selectedStop.route}</Col>
-                </Row>
-                <Row className ="Card-cell">
-                  <Col className ="Card-bold">Next Bus</Col>
-                  <Col style={{ textAlign: 'right' }}>5 minutes</Col>
-                </Row>
-                <Row className ="Card-cell">
-                  <Col className ="Card-bold">Something</Col>
-                  <Col style={{ textAlign: 'right' }}>Something else</Col>
-                </Row>
-                <Row className ="Card-cell">
-                  <Col className ="Card-bold">Something</Col>
-                  <Col style={{ textAlign: 'right' }}>Something else</Col>
-                </Row>
-              </Container>
+              {showStopPopup(selectedStop)}
             </InfoWindowF>
           ) : null}
         </MarkerF>
