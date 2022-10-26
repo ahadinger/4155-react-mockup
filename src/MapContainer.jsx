@@ -21,23 +21,55 @@ import {
   defaultCenter,
 } from "./constants/map";
 import { getBusLocations } from "./util/api";
-import { BusLocations } from "./components/Bus";
 import { useEffect } from "react";
+import { useCallback } from "react";
+import { getBusMarkerData } from "./util/bus";
+import { SlidingMarker } from "./util/SlidingMarker";
+
+
+
+
 export const MapContainer = () => {
-  const onLoad = (polyline) => {
-    console.log("polyline: ", polyline);
-  };
+  const [map, setMap] = React.useState(null)
+  const [loaded,setLoaded] =  useState(false)
+  const onLoad = useCallback((map) => {
+    setLoaded(true);
+    setMap(map);
+    console.log(loaded)
+  },[loaded]);
+  const [markers, setMarkers] = useState({});
 
   const [selectedStop, setSelectedStop] = useState(null);
-  const [locations, setLocations] = useState({});
+  const [locations, setLocations] = useState([]);
+
 
   const handleLocations = (json) => {
     setLocations(Object.values(json).flat());
   };
   useEffect(() => {
-    setInterval(() => getBusLocations().then(handleLocations), 1000);
+    setInterval(() => getBusLocations().then(handleLocations), 2000);
     getBusLocations().then(handleLocations);
   }, []);
+
+
+  useEffect(() => {
+    if(!loaded) return;
+      // eslint-disable-next-line no-undef
+
+    const markerData = getBusMarkerData(locations)
+
+    markerData.forEach(m=>{
+      if(markers[m.id]){
+        markers[m.id].updateMarkerPosition(m)
+        console.log('exists')
+      }else{
+        // eslint-disable-next-line no-undef
+
+        markers[m.id] = new SlidingMarker({...m,map});
+      }
+    })
+  }, [locations,loaded,markers,map]);
+
 
   const getStopsContent = (stops) =>
     stops.map((item) => {
@@ -79,13 +111,13 @@ export const MapContainer = () => {
         id="rotCanvas"
         width={60}
         height={60}
-        // style={{ display: "none" }}
+        style={{ display: "none" }}
       ></canvas>
       <canvas
         id="busCanvas"
         width={60}
         height={60}
-        // style={{ display: "none" }}
+        style={{ display: "none" }}
       ></canvas>
 
       <LoadScript googleMapsApiKey={process.env.REACT_APP_MAP_API_KEY}>
@@ -96,6 +128,7 @@ export const MapContainer = () => {
             streetViewControl: false,
             disableDefaultUI: true,
           }}
+          onLoad={onLoad}
           onClick={() => setSelectedStop(null)}
           mapContainerStyle={mapStyles}
           zoom={16}
@@ -105,11 +138,10 @@ export const MapContainer = () => {
 
           <PolylineF onLoad={onLoad} path={greenPath} options={greenOptions} />
           <PolylineF
-            onLoad={onLoad}
             path={silverPath}
             options={silverOptions}
           />
-          <BusLocations locations={locations} />
+          {/* <BusLocations locations={locations} /> */}
         </GoogleMap>
       </LoadScript>
     </Fragment>
