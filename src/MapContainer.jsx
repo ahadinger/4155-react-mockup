@@ -9,6 +9,8 @@ import stops from './stops.json'
 import green from './greenroute.json';
 import silver from './silverroute.json';
 
+import './App.css';
+
 export const MapContainer = () => {
   
   const mapStyles = {        
@@ -75,18 +77,32 @@ export const MapContainer = () => {
           <InfoWindowF
             onCloseClick={() => setSelectedStop(null)}
             position={selectedStop.position}
+            
+            options={{
+              shouldFocus: true,
+              minWidth: 350,
+              maxWidth: 350
+            }}
             >
               <Container>
                 <Row>
-                  <Col>{selectedStop.name}</Col>
+                  <Col className ="Card-title"><h5>{selectedStop.name}</h5></Col>
                 </Row>
-                <Row>
-                  <Col>Route</Col>
-                  <Col>{selectedStop.route}</Col>
+                <Row className ="Card-cell">
+                  <Col className ="Card-bold">Route</Col>
+                  <Col className = {selectedStop.route} style={{ textAlign: 'right' }}>{selectedStop.route}</Col>
                 </Row>
-                <Row>
-                  <Col>Next Bus</Col>
-                  <Col>5 minutes</Col>
+                <Row className ="Card-cell">
+                  <Col className ="Card-bold">Next Bus</Col>
+                  <Col style={{ textAlign: 'right' }}>5 minutes</Col>
+                </Row>
+                <Row className ="Card-cell">
+                  <Col className ="Card-bold">Something</Col>
+                  <Col style={{ textAlign: 'right' }}>Something else</Col>
+                </Row>
+                <Row className ="Card-cell">
+                  <Col className ="Card-bold">Something</Col>
+                  <Col style={{ textAlign: 'right' }}>Something else</Col>
                 </Row>
               </Container>
           </InfoWindowF>
