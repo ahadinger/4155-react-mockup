@@ -11,12 +11,15 @@ import BusStop from "./images/small-circle-2.png";
 import stops from "./stops.json";
 import greenPath from "./greenroute.json";
 import silverPath from "./silverroute.json";
+import shoppingPath from "./shoppingroute.json";
 import {
   silverOptions,
   greenOptions,
+  shoppingShuttleOptions,
   mapStyles,
   defaultCenter,
 } from "./constants/map";
+
 import { getBusLocations } from "./util/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
@@ -24,7 +27,6 @@ import { getBusMarkerData } from "./util/bus";
 import { SlidingMarker } from "./util/SlidingMarker";
 
 import { showStopPopup } from "./util/stopsPopup";
-import { GetStops } from "./util/stops";
 
 export const MapContainer = () => {
   const [map, setMap] = React.useState(null)
@@ -156,10 +158,14 @@ export const MapContainer = () => {
         >
           {getStopsContent(stops)}
 
-          <PolylineF onLoad={onLoad} path={greenPath} options={greenOptions} />
+          <PolylineF path={greenPath} options={greenOptions} />
           <PolylineF
             path={silverPath}
             options={silverOptions}
+          />
+          <PolylineF
+            path={shoppingPath}
+            options={shoppingShuttleOptions}
           />
 
         </GoogleMap>
