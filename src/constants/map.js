@@ -18,6 +18,18 @@ export const silverOptions = {
     visible: true,
 };
   
+
+export const shoppingShuttleOptions = {
+  strokeColor: '#3e9bba',
+  strokeOpacity: 0.8,
+  strokeWeight: 5,
+  clickable: false,
+  draggable: false,
+  editable: false,
+  visible: true,
+};
+
+
 export const mapStyles = {        
     height: "100vh",
     width: "100%"

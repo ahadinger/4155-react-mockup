@@ -6,28 +6,27 @@ import {
   PolylineF,
   InfoWindowF,
 } from "@react-google-maps/api";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 
 import BusStop from "./images/small-circle-2.png";
 import stops from "./stops.json";
 import greenPath from "./greenroute.json";
 import silverPath from "./silverroute.json";
+import shoppingPath from "./shoppingroute.json";
 import {
   silverOptions,
   greenOptions,
+  shoppingShuttleOptions,
   mapStyles,
   defaultCenter,
 } from "./constants/map";
+
 import { getBusLocations } from "./util/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { getBusMarkerData } from "./util/bus";
 import { SlidingMarker } from "./util/SlidingMarker";
 
-
-
+import { showStopPopup } from "./util/stopsPopup";
 
 export const MapContainer = () => {
   const [map, setMap] = React.useState(null)
@@ -93,7 +92,7 @@ export const MapContainer = () => {
     })
   }, [locations,loaded,markers,map]);
 
-
+  
   const getStopsContent = (stops) =>
     stops.map((item) => {
       return (
@@ -108,20 +107,13 @@ export const MapContainer = () => {
             <InfoWindowF
               onCloseClick={() => setSelectedStop(null)}
               position={selectedStop.position}
+              options={{
+                shouldFocus: true,
+                minWidth: 350,
+                maxWidth: 350
+              }}
             >
-              <Container>
-                <Row>
-                  <Col>{selectedStop.name}</Col>
-                </Row>
-                <Row>
-                  <Col>Route</Col>
-                  <Col>{selectedStop.route}</Col>
-                </Row>
-                <Row>
-                  <Col>Next Bus</Col>
-                  <Col>5 minutes</Col>
-                </Row>
-              </Container>
+              {showStopPopup(selectedStop)}
             </InfoWindowF>
           ) : null}
         </MarkerF>
@@ -166,10 +158,14 @@ export const MapContainer = () => {
         >
           {getStopsContent(stops)}
 
-          <PolylineF onLoad={onLoad} path={greenPath} options={greenOptions} />
+          <PolylineF path={greenPath} options={greenOptions} />
           <PolylineF
             path={silverPath}
             options={silverOptions}
+          />
+          <PolylineF
+            path={shoppingPath}
+            options={shoppingShuttleOptions}
           />
 
         </GoogleMap>

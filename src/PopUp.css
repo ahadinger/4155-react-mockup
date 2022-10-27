@@ -1,0 +1,31 @@
+.Card-title{
+    text-align: center;
+  }
+  
+  .Card-cell{
+    font-size: medium;
+    margin-bottom: 1%;
+  }
+  
+  .Card-bold{
+    font-weight: bold;
+  }
+  
+  .Silver{
+    color:silver
+  }
+  .Route-Green{
+    color:green
+  }
+
+  .Shopping-Shuttle{
+    color: #3e9bba
+  }
+
+  .Football-South{
+    color: #7d4d10
+  }
+
+  .Football-North{
+    color: #7d4d10
+  }
