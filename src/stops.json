@@ -153,22 +153,6 @@
     },
     {
         "position": {
-            "lat": 35.308106119,
-            "lng": -80.732820822
-        },
-        "name": "Charter start",
-        "route": "Charter"
-    },
-    {
-        "position": {
-            "lat": 35.308132323,
-            "lng": -80.732772658
-        },
-        "name": "Charter end",
-        "route": "Charter"
-    },
-    {
-        "position": {
             "lat": 35.311624885,
             "lng": -80.730350714
         },
