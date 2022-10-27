@@ -53,6 +53,22 @@ export const MapContainer = () => {
   const handleLocations = (json) => {
     setLocations(Object.values(json).flat());
   };
+
+    const styles: Record<string, google.maps.MapTypeStyle[]> = {
+        default: [],
+        hide: [
+            {
+                featureType: "poi.business",
+                stylers: [{ visibility: "off" }],
+            },
+            {
+                featureType: "transit",
+                elementType: "labels.icon",
+                stylers: [{ visibility: "off" }],
+            },
+        ],
+    };
+
   useEffect(() => {
     setInterval(() => getBusLocations().then(handleLocations), 2000);
     getBusLocations().then(handleLocations);
@@ -135,6 +151,7 @@ export const MapContainer = () => {
               streetViewControl: false,
               disableDefaultUI: true,
               gestureHandling: "greedy",
+              styles: styles["hide"],
               restriction: {
                 latLngBounds: CAMPUS_BOUNDS,
                 strictBounds: false
