@@ -24,6 +24,7 @@ import { getBusMarkerData } from "./util/bus";
 import { SlidingMarker } from "./util/SlidingMarker";
 
 import { showStopPopup } from "./util/stopsPopup";
+import { GetStops } from "./util/stops";
 
 export const MapContainer = () => {
   const [map, setMap] = React.useState(null)
@@ -73,7 +74,7 @@ export const MapContainer = () => {
     })
   }, [locations,loaded,markers,map]);
 
-
+  
   const getStopsContent = (stops) =>
     stops.map((item) => {
       return (
