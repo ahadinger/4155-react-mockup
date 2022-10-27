@@ -39,10 +39,10 @@ export const MapContainer = () => {
   const [markers, setMarkers] = useState({});
 
   const CAMPUS_BOUNDS = {
-    north: 35.315439301120726,
-    south: 35.29918909848325,
-    west: -80.75176478679214,
-    east: -80.71247424385233,
+      north: 35.315439301120726,
+      south: 35.29118909848325,
+      west: -80.75576478679214,
+      east: -80.71247424385233,
   };
 
   const [selectedStop, setSelectedStop] = useState(null);
@@ -53,7 +53,7 @@ export const MapContainer = () => {
     setLocations(Object.values(json).flat());
   };
 
-    const styles: Record<string, google.maps.MapTypeStyle[]> = {
+    const styles = {
         default: [],
         hide: [
             {
@@ -63,7 +63,7 @@ export const MapContainer = () => {
             {
                 featureType: "transit",
                 elementType: "labels.icon",
-                stylers: [{ visibility: "off" }],
+                stylers: [{ visibility: "on"}],
             },
         ],
     };
@@ -146,7 +146,7 @@ export const MapContainer = () => {
               styles: styles["hide"],
               restriction: {
                 latLngBounds: CAMPUS_BOUNDS,
-                strictBounds: false
+                strictBounds: true
               }
             }}
           onLoad={onLoad}

@@ -15,6 +15,15 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.Banner {
+  position:relative;
+  background-color: red;
+  color: white;
+  text-align: center;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
