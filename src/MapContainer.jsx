@@ -12,6 +12,8 @@ import stops from "./stops.json";
 import greenPath from "./greenroute.json";
 import silverPath from "./silverroute.json";
 import shoppingPath from "./shoppingroute.json";
+import { useQuery } from "react-query";
+import { getAllStops } from "./util/api";
 import {
   silverOptions,
   greenOptions,
@@ -31,12 +33,15 @@ import { showStopPopup } from "./util/stopsPopup";
 export const MapContainer = () => {
   const [map, setMap] = React.useState(null)
   const [loaded,setLoaded] =  useState(false)
+  const [selectedStop, setSelectedStop] = useState(null);
+  const [locations, setLocations] = useState([]);
+  const [markers, setMarkers] = useState({});
+
   const onLoad = useCallback((map) => {
     setLoaded(true);
     setMap(map);
     console.log(loaded)
   },[loaded]);
-  const [markers, setMarkers] = useState({});
 
   const CAMPUS_BOUNDS = {
       north: 35.315439301120726,
@@ -45,9 +50,10 @@ export const MapContainer = () => {
       east: -80.71247424385233,
   };
 
-  const [selectedStop, setSelectedStop] = useState(null);
-  const [locations, setLocations] = useState([]);
 
+  const { data, isLoading } = useQuery("getStops", () => getAllStops());
+  const stops = isLoading ? [] : data;
+  console.log(stops)
 
   const handleLocations = (json) => {
     setLocations(Object.values(json).flat());

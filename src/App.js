@@ -1,16 +1,17 @@
-import logo from './logo.svg';
-import './App.css';
-
-
+import logo from "./logo.svg";
+import "./App.css";
+import { Fragment, useEffect } from "react";
+import Header from "./Header";
+import Banner from "./Banner";
+import MapContainer from "./MapContainer";
 
 function App() {
-  
   return (
-    <div className="App">
-      <header className="App-header">
-        
-      </header>
-    </div>
+    <Fragment>
+      <Header />
+      <Banner />
+      <MapContainer />
+    </Fragment>
   );
 }
 

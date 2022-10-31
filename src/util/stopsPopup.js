@@ -5,7 +5,7 @@ import '../PopUp.css';
 //need to get the data in the future
 
 export const showStopPopup = (stop) => {
-    const n = stop.route;
+    const n = stop.routeName;
     return (
     <Container>
         <Row>
@@ -13,7 +13,7 @@ export const showStopPopup = (stop) => {
         </Row>
         <Row className="Card-cell">
             <Col className="Card-bold">Route</Col>
-            <Col className={n.replace(' ', '-')} style={{ textAlign: 'right' }}>{stop.route}</Col>
+            <Col className={n.replace(' ', '-')} style={{ textAlign: 'right' }}>{stop.routeName}</Col>
         </Row>
         <Row className="Card-cell">
             <Col className="Card-bold">Next Bus</Col>
