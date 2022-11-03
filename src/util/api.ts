@@ -51,7 +51,7 @@ export const getAllStops = async (): Promise<Stop[]> => {
   return Array.from(Object.values((await res.json()).stops))
     .flat()
     .map((el: any) => {
-      el["position"] = { lat: el.latitude, lng: el.longitude };
+      el["location"] = { lat: el.latitude, lng: el.longitude };
       return el;
     }) as Stop[];
 };

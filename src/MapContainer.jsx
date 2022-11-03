@@ -29,7 +29,7 @@ import { getBusMarkerData } from "./util/bus";
 import { SlidingMarker } from "./util/SlidingMarker";
 
 import { showStopPopup } from "./util/stopsPopup";
-
+import { setMap as setGlobalMap } from "./constants/map";
 export const MapContainer = () => {
   const [map, setMap] = React.useState(null)
   const [loaded,setLoaded] =  useState(false)
@@ -40,8 +40,8 @@ export const MapContainer = () => {
   const onLoad = useCallback((map) => {
     setLoaded(true);
     setMap(map);
-    console.log(loaded)
-  },[loaded]);
+    setGlobalMap(map)
+  },[]);
 
   const CAMPUS_BOUNDS = {
       north: 35.315439301120726,
@@ -53,7 +53,6 @@ export const MapContainer = () => {
 
   const { data, isLoading } = useQuery("getStops", () => getAllStops());
   const stops = isLoading ? [] : data;
-  console.log(stops)
 
   const handleLocations = (json) => {
     setLocations(Object.values(json).flat());
@@ -89,7 +88,6 @@ export const MapContainer = () => {
     markerData.forEach(m=>{
       if(markers[m.id]){
         markers[m.id].updateMarkerPosition(m)
-        console.log('exists')
       }else{
         // eslint-disable-next-line no-undef
 
@@ -104,7 +102,7 @@ export const MapContainer = () => {
       return (
         <MarkerF
           icon={BusStop}
-          position={item.position}
+          position={item.location}
           onClick={() => {
             setSelectedStop(item);
           }}
@@ -112,7 +110,7 @@ export const MapContainer = () => {
           {selectedStop === item ? (
             <InfoWindowF
               onCloseClick={() => setSelectedStop(null)}
-              position={selectedStop.position}
+              position={selectedStop.location}
               options={{
                 shouldFocus: true,
                 minWidth: 350,

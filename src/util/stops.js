@@ -14,7 +14,6 @@ export const GetStops = (id) =>{
     .then((response) => {
         return response;
     });
-    console.log(allStops);
     //const name = routes[id][0];
     
     //using route_id
