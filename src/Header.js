@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import StopSearch from './components/StopSearch';
-function Header() {
+function Header({stopState}) {
     return (
       <Navbar bg="light" expand="lg">
         <Container>
@@ -14,7 +14,7 @@ function Header() {
             <Nav className="me-auto">
               
             </Nav>
-            <StopSearch className="me-2"/>
+            <StopSearch className="me-2" stopState={stopState}/>
 
           </Navbar.Collapse>
         </Container>
