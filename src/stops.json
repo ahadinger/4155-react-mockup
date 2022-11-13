@@ -286,34 +286,6 @@
         ]
     },
     {
-        "id": "8277",
-        "position": {
-            "lat": 35.308106119,
-            "lng": -80.732820822
-        },
-        "name": "Charter start",
-        "route": [
-            "Charter"
-        ],
-        "route_id": [
-            "3406"
-        ]
-    },
-    {
-        "id": "8278",
-        "position": {
-            "lat": 35.308132323,
-            "lng": -80.732772658
-        },
-        "name": "Charter end",
-        "route": [
-            "Charter"
-        ],
-        "route_id": [
-            "3406"
-        ]
-    },
-    {
         "id": "8568",
         "position": {
             "lat": 35.3135,
