@@ -3,6 +3,9 @@ import { getRoutes, getAllStops } from "./api";
 
 export const GetStops = (id) =>{
     //const [stops, setStops] = useState({});
+    
+
+    //The return type of getAllStops has changed to return an array instead of an object -Kareem
     const allStops = getAllStops()
     .then((response) => {
         return response;
@@ -11,7 +14,6 @@ export const GetStops = (id) =>{
     .then((response) => {
         return response;
     });
-    console.log(allStops);
     //const name = routes[id][0];
     
     //using route_id

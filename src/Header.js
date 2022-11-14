@@ -3,8 +3,8 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-
-function Header() {
+import StopSearch from './components/StopSearch';
+function Header({stopState}) {
     return (
       <Navbar bg="light" expand="lg">
         <Container>
@@ -14,15 +14,8 @@ function Header() {
             <Nav className="me-auto">
               
             </Nav>
-            <Form className="d-flex">
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-            />
-            <Button variant="outline-success">Search</Button>
-          </Form>
+            <StopSearch className="me-2" stopState={stopState}/>
+
           </Navbar.Collapse>
         </Container>
       </Navbar>

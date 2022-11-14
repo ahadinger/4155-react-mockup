@@ -4,16 +4,20 @@ import './index.css';
 import MapContainer from './MapContainer';
 import Header from './Header';
 import Banner from "./Banner";
-import CreateRouteButton from "./CreateRoute";
+import App from './App';
+
+import { QueryClient, QueryClientProvider, useQuery } from "react-query";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+const queryClient = new QueryClient()
 
 root.render(
   <React.StrictMode>
-      <Header/>
-      <Banner/>
-      <CreateRouteButton/>
-      <MapContainer/>
+    <QueryClientProvider client={queryClient}>
+
+    <App/>
+    </QueryClientProvider>
+
   </React.StrictMode>
 );
 
