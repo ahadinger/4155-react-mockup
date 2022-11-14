@@ -1,4 +1,5 @@
 import { Stop } from "../types/Stop";
+import routes from "../routes.json";
 
 export const getBusLocations = async () => {
   const res = await fetch(
@@ -52,6 +53,35 @@ export const getAllStops = async (): Promise<Stop[]> => {
     .flat()
     .map((el: any) => {
       el["location"] = { lat: el.latitude, lng: el.longitude };
+      el["route_list"] = getStopRouteId(el.id);
+      el["route_name_list"] = getStopRouteName(el.id);
       return el;
     }) as Stop[];
 };
+
+
+function getStopRouteId(stopId:string):string[] {
+  const r_arr:string[] = []
+  for(const route of routes){
+    for(let i = 0; i < route['routes'].length; i++){
+      if (route['routes'][i] == stopId){
+        const temp = []
+        r_arr.push(route.id);
+      }
+    }
+  }
+  return r_arr;
+}
+
+function getStopRouteName(stopId:string):string[] {
+  const r_arr:string[] = []
+  for(const route of routes){
+    for(let i = 0; i < route['routes'].length; i++){
+      if (route['routes'][i] == stopId){
+        const temp = []
+        r_arr.push(route.name);
+      }
+    }
+  }
+  return r_arr;
+}

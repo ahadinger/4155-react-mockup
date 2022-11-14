@@ -5,14 +5,13 @@ import '../PopUp.css';
 //need to get the data in the future
 
 export const showStopPopup = (stop) => {
-    const n = stop.route[0];
     const rows = [];
-    for(let i = 0; i < stop.route.length; i++){
+    for(let i = 0; i < stop['route_list'].length; i++){
         rows.push(
             <>
             <Row className="Card-cell">
                 <Col className="Card-bold">Route</Col>
-                <Col className={stop.route[i].replace(' ', '-')} style={{ textAlign: 'right' }}>{stop.route[i]}</Col>
+                <Col className={stop['route_name_list'][i].replace(' ', '-')} style={{ textAlign: 'right' }}>{stop['route_name_list'][i]}</Col>
             </Row>
             <Row className="Card-cell">
                 <Col className="Card-bold">Next Bus</Col>

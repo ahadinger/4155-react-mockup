@@ -8,7 +8,7 @@ import {
 } from "@react-google-maps/api";
 
 import BusStop from "./images/small-circle-2.png";
-import stops from "./stops.json";
+import stopsJson from "./stops.json";
 import greenPath from "./greenroute.json";
 import silverPath from "./silverroute.json";
 import shoppingPath from "./shoppingroute.json";
