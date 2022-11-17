@@ -1,4 +1,4 @@
-import React, { useState, useSetState } from "react";
+import React, { useState, useSetState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -39,7 +39,8 @@ export const CreateRouteForm = () => {
         if(selectedRoute != e.target.value){ //avoid updating the stops list if it's not needed.
             updateStopsList(e.target.value)
         }
-        
+
+
         //in the future, selecting a route will only show stops that are in the route
         //will probably be an extension of future filter feature.
     }
@@ -96,7 +97,12 @@ export const CreateRouteForm = () => {
         console.log(tempList)
         return tempList
     }
-
+    useEffect(()=>{
+        const startStop = document.querySelector("#startStop")
+        const endStop = document.querySelector("#endStop")
+        startStop.value = startStop.defaultSelected
+        endStop.value = endStop.defaultSelected
+    },[stopList])
     return (
             <Container>
                 <Form>
@@ -106,28 +112,28 @@ export const CreateRouteForm = () => {
                             onChange={handleRoute}
                             onSelect={handleRoute}
                             >
-                            <option>Select a Route</option>
+                            <option selected>Select a Route</option>
                             {route_list}
                             </Form.Select>
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="start_stop">Starting at: </Form.Label>
-                            <Form.Select
+                            <Form.Select id="startStop"
                             onChange={handleStart}
                             onSelect={handleStart}
                             >
-                            <option>Select a stop</option>
+                            {/* <option selected>Select a stop</option> */}
                             {stopList}
                             </Form.Select>
                     </Form.Group>
                     <Form.Group className="mb-3">
                     <Form.Label htmlFor="end_stop">Ending at: </Form.Label>
-                            <Form.Select
+                            <Form.Select id="endStop"
                             onChange={handleEnd}
                             onSelect={handleStart}
                             
                             >
-                            <option>Select a stop</option>
+                            {/* <option selected >Select a stop</option> */}
                             {stopList}
                             </Form.Select>
                     </Form.Group>
