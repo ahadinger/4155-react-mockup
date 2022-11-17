@@ -8,7 +8,7 @@ import {
 } from "@react-google-maps/api";
 
 import BusStop from "./images/small-circle-2.png";
-import stops from "./stops.json";
+import stopsJson from "./stops.json";
 import greenPath from "./greenroute.json";
 import silverPath from "./silverroute.json";
 import shoppingPath from "./shoppingroute.json";
@@ -30,6 +30,7 @@ import { SlidingMarker } from "./util/SlidingMarker";
 
 import { showStopPopup } from "./util/stopsPopup";
 import { setMap as setGlobalMap } from "./constants/map";
+
 export const MapContainer = ({ stopState }) => {
   const [map, setMap] = React.useState(null);
   const [loaded, setLoaded] = useState(false);
@@ -96,6 +97,9 @@ export const MapContainer = ({ stopState }) => {
 
   const getStopsContent = (stops) =>
     stops.map((item) => {
+      if(item.routeName == "Charter"){
+        return;
+      }
       return (
         <MarkerF
           icon={BusStop}

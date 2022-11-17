@@ -15,6 +15,7 @@
     "strictNullChecks": true,
     "esModuleInterop": true,  
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
+    "resolveJsonModule":true,
   },
   "exclude": [
     "node_modules",
