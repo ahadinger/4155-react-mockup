@@ -53,8 +53,8 @@ export const getAllStops = async (): Promise<Stop[]> => {
     .flat()
     .map((el: any) => {
       el["location"] = { lat: el.latitude, lng: el.longitude };
-      el["stopList"] = getStopRouteId(el.id);
-      el["stopNameList"] = getStopRouteName(el.id);
+      el["routeList"] = getStopRouteId(el.id);
+      el["routeNameList"] = getStopRouteName(el.id);
       return el;
     }) as Stop[];
 };
