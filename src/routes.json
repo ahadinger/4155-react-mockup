@@ -2,7 +2,7 @@
     {
         "id": "3201",
         "name": "Silver",
-        "routes": [
+        "stops": [
             "7523",
             "7525",
             "7527",
@@ -27,7 +27,7 @@
     {
         "id": "3406",
         "name": "Charter",
-        "routes": [
+        "stops": [
             "8277",
             "8278"
         ]
@@ -35,7 +35,7 @@
     {
         "id": "3474",
         "name": "Football North",
-        "routes": [
+        "stops": [
             "8568",
             "7542",
             "32704",
@@ -46,7 +46,7 @@
     {
         "id": "16380",
         "name": "Route Green",
-        "routes": [
+        "stops": [
             "8276",
             "8568",
             "7542",
@@ -70,7 +70,7 @@
     {
         "id": "22940",
         "name": "Football South",
-        "routes": [
+        "stops": [
             "32704",
             "15436",
             "7545",
@@ -82,7 +82,7 @@
     {
         "id": "26294",
         "name": "Niner Paratransit",
-        "routes": [
+        "stops": [
             "7514",
             "7530"
         ]
@@ -90,7 +90,7 @@
     {
         "id": "26308",
         "name": "Shopping Shuttle",
-        "routes": [
+        "stops": [
             "7522",
             "7503",
             "7516",
@@ -103,7 +103,7 @@
     {
         "id": "35130",
         "name": "Greek Village Shuttle",
-        "routes": [
+        "stops": [
             "7514",
             "129987",
             "129988",

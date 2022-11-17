@@ -53,8 +53,8 @@ export const getAllStops = async (): Promise<Stop[]> => {
     .flat()
     .map((el: any) => {
       el["location"] = { lat: el.latitude, lng: el.longitude };
-      el["route_list"] = getStopRouteId(el.id);
-      el["route_name_list"] = getStopRouteName(el.id);
+      el["stopList"] = getStopRouteId(el.id);
+      el["stopNameList"] = getStopRouteName(el.id);
       return el;
     }) as Stop[];
 };
@@ -63,8 +63,8 @@ export const getAllStops = async (): Promise<Stop[]> => {
 function getStopRouteId(stopId:string):string[] {
   const r_arr:string[] = []
   for(const route of routes){
-    for(let i = 0; i < route['routes'].length; i++){
-      if (route['routes'][i] == stopId){
+    for(let i = 0; i < route['stops'].length; i++){
+      if (route['stops'][i] == stopId){
         const temp = []
         r_arr.push(route.id);
       }
@@ -76,8 +76,8 @@ function getStopRouteId(stopId:string):string[] {
 function getStopRouteName(stopId:string):string[] {
   const r_arr:string[] = []
   for(const route of routes){
-    for(let i = 0; i < route['routes'].length; i++){
-      if (route['routes'][i] == stopId){
+    for(let i = 0; i < route['stops'].length; i++){
+      if (route['stops'][i] == stopId){
         const temp = []
         r_arr.push(route.name);
       }
