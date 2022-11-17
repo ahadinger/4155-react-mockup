@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useSetState } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -27,18 +27,19 @@ export const CreateRouteForm = () => {
     for (let i = 0; i < routes.length; i++) {
         route_list.push(
             <>
-                <option value={routes[i]['name']}>{routes[i]['name']}</option>
+                <option value={routes[i]['id']}
+                    >{routes[i]['name']}</option>
             </>
         )
     }
 
 
     function handleRoute(e) {
-        console.log("user selected " + e.target.value)
         setSelectedRoute(e.target.value)
-        if(selectedRoute !== e.target.value){
+        if(selectedRoute != e.target.value){ //avoid updating the stops list if it's not needed.
             updateStopsList(e.target.value)
         }
+        
         //in the future, selecting a route will only show stops that are in the route
         //will probably be an extension of future filter feature.
     }
@@ -52,24 +53,48 @@ export const CreateRouteForm = () => {
 
     function handleSubmit() {
         console.log("Route " + selectedRoute)
+        if(startStop === null){ 
+            //if the user didn't select anything/selected a new route, which clears out the stops
+            //sometimes after selecting a new route a stop is displayed as being selected but isn't actually selected.
+            //this was my attempt to make it default to the first stop in the select route but it doesn't actually update
+            setStartStop(getListofStops(selectedRoute)[0])
+            console.log(startStop)
+        }
         console.log("Starting from " + startStop);
+        if(endStop === null){
+            setEndStop(getListofStops(selectedRoute)[0])
+        }
         console.log("Ending at " +endStop);
     }
 
     function updateStopsList(routeName){
+        setStartStop(null)
+        setEndStop(null)
         const tempList = []
         for(const stop of stops){
-            console.log(selectedRoute)
-            if (stop['routeNameList'].includes(routeName)){
-                console.log(stop['routeNameList'])
+            if (stop['routeList'].includes(routeName)){
                 tempList.push(
                     <>
-                        <option value={stop['name']}>{stop['name']}</option>
+                        <option value={stop['id']}
+                            >{stop['name']}</option>
                     </>
                 )
             } 
         }
         setStopList(tempList)
+    }
+
+    function getListofStops(routeName){
+        const tempList = []
+        for(const stop of stops){
+            if (stop['routeList'].includes(routeName)){
+                tempList.push(
+                    stop['id']
+                )
+            } 
+        }
+        console.log(tempList)
+        return tempList
     }
 
     return (
@@ -79,6 +104,7 @@ export const CreateRouteForm = () => {
                         <Form.Label htmlFor="disabledSelect">Select a Route</Form.Label>
                             <Form.Select
                             onChange={handleRoute}
+                            onSelect={handleRoute}
                             >
                             <option>Select a Route</option>
                             {route_list}
@@ -88,8 +114,9 @@ export const CreateRouteForm = () => {
                         <Form.Label htmlFor="start_stop">Starting at: </Form.Label>
                             <Form.Select
                             onChange={handleStart}
+                            onSelect={handleStart}
                             >
-                            
+                            <option>Select a stop</option>
                             {stopList}
                             </Form.Select>
                     </Form.Group>
@@ -97,8 +124,10 @@ export const CreateRouteForm = () => {
                     <Form.Label htmlFor="end_stop">Ending at: </Form.Label>
                             <Form.Select
                             onChange={handleEnd}
-                            >
+                            onSelect={handleStart}
                             
+                            >
+                            <option>Select a stop</option>
                             {stopList}
                             </Form.Select>
                     </Form.Group>
