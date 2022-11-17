@@ -1,4 +1,4 @@
-import React, { useState, useSetState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -36,7 +36,7 @@ export const CreateRouteForm = () => {
 
     function handleRoute(e) {
         setSelectedRoute(e.target.value)
-        if(selectedRoute != e.target.value){ //avoid updating the stops list if it's not needed.
+        if(selectedRoute !== e.target.value){ //avoid updating the stops list if it's not needed.
             updateStopsList(e.target.value)
         }
 
@@ -54,17 +54,15 @@ export const CreateRouteForm = () => {
 
     function handleSubmit() {
         console.log("Route " + selectedRoute)
-        if(startStop === null){ 
-            //if the user didn't select anything/selected a new route, which clears out the stops
-            //sometimes after selecting a new route a stop is displayed as being selected but isn't actually selected.
-            //this was my attempt to make it default to the first stop in the select route but it doesn't actually update
-            setStartStop(getListofStops(selectedRoute)[0])
-            console.log(startStop)
+        if(startStop === null || endStop === null){
+            //error validation
+            console.log("please select two stops")
+        }
+        if(startStop == endStop){
+            //error validation
+            console.log("please select two different stops")
         }
         console.log("Starting from " + startStop);
-        if(endStop === null){
-            setEndStop(getListofStops(selectedRoute)[0])
-        }
         console.log("Ending at " +endStop);
     }
 
@@ -97,12 +95,14 @@ export const CreateRouteForm = () => {
         console.log(tempList)
         return tempList
     }
+
     useEffect(()=>{
         const startStop = document.querySelector("#startStop")
         const endStop = document.querySelector("#endStop")
         startStop.value = startStop.defaultSelected
         endStop.value = endStop.defaultSelected
     },[stopList])
+
     return (
             <Container>
                 <Form>
@@ -112,7 +112,7 @@ export const CreateRouteForm = () => {
                             onChange={handleRoute}
                             onSelect={handleRoute}
                             >
-                            <option selected>Select a Route</option>
+                            <option>Select a Route</option>
                             {route_list}
                             </Form.Select>
                     </Form.Group>
