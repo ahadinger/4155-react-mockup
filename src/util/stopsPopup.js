@@ -6,12 +6,12 @@ import '../PopUp.css';
 
 export const showStopPopup = (stop) => {
     const rows = [];
-    for(let i = 0; i < stop['stopList'].length; i++){
+    for(let i = 0; i < stop['routeList'].length; i++){
         rows.push(
             <>
             <Row className="Card-cell">
                 <Col className="Card-bold">Route</Col>
-                <Col className={stop['stopNameList'][i].replace(' ', '-')} style={{ textAlign: 'right' }}>{stop['stopNameList'][i]}</Col>
+                <Col className={stop['routeNameList'][i].replace(' ', '-')} style={{ textAlign: 'right' }}>{stop['routeNameList'][i]}</Col>
             </Row>
             <Row className="Card-cell">
                 <Col className="Card-bold">Next Bus</Col>
