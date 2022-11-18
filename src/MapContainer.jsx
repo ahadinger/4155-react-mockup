@@ -5,6 +5,7 @@ import {
   MarkerF,
   PolylineF,
   InfoWindowF,
+  TrafficLayerF,
 } from "@react-google-maps/api";
 
 import BusStop from "./images/small-circle-2.png";
@@ -102,7 +103,10 @@ export const MapContainer = ({ stopState }) => {
       }
       return (
         <MarkerF
-          icon={BusStop}
+          icon={{
+            url: BusStop,
+            scale: 0.05,
+          }}
           position={item.location}
           onClick={() => {
             setSelectedStop(item);

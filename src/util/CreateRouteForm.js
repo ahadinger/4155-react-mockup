@@ -9,6 +9,7 @@ import { useQuery } from "react-query";
 import { getAllStops } from "./api";
 import '../PopUp.css';
 import routes from "../routes.json";
+import { isIndexSignatureDeclaration } from "typescript";
 
 
 
@@ -18,6 +19,8 @@ export const CreateRouteForm = () => {
     const [startStop,setStartStop] =  useState(null)
     const [endStop,setEndStop] =  useState(null)
     const [stopList,setStopList] =  useState(null)
+
+    const [minuteTimes,setTimes] =  useState(null)
 
     const { data, isLoading } = useQuery("getStops", () => getAllStops());
     const stops = isLoading ? [] : data;
@@ -40,7 +43,6 @@ export const CreateRouteForm = () => {
             updateStopsList(e.target.value)
         }
 
-
         //in the future, selecting a route will only show stops that are in the route
         //will probably be an extension of future filter feature.
     }
@@ -52,16 +54,20 @@ export const CreateRouteForm = () => {
         setEndStop(e.target.value)
     }
 
-    function handleSubmit() {
+    async function handleSubmit() {
         console.log("Route " + selectedRoute)
         if(startStop === null || endStop === null){
             //error validation
             console.log("please select two stops")
         }
-        if(startStop == endStop){
+        else if(startStop == endStop){
             //error validation
             console.log("please select two different stops")
         }
+        else{
+            setTimes(await getTimeForRoute(startStop, endStop, selectedRoute))
+        }
+        
         console.log("Starting from " + startStop);
         console.log("Ending at " +endStop);
     }
@@ -94,6 +100,26 @@ export const CreateRouteForm = () => {
         }
         console.log(tempList)
         return tempList
+    }
+
+    async function getTimeForRoute(startID, endID, selectedRoute){
+        let total = 0
+        const stopList = getListofStops(selectedRoute)
+        const startIndex = stopList.findIndex(obj => obj === startID)
+        const endIndex = stopList.findIndex(obj => obj === endID)
+        let i = startIndex
+        while(i != endIndex){
+            const resp = await fetch(`http://198.71.63.67:4100/stops/timetostop/${stopList[i]}/${stopList[(i+1)%stopList.length]}`)
+            const json = await resp.json()
+            console.log(json.timeTaken)
+            i= (i+1)%stopList.length;
+            if(resp.status != 404){
+                total = total + json.timeTaken
+            }
+            
+        }
+        
+        return total 
     }
 
     useEffect(()=>{
@@ -144,15 +170,15 @@ export const CreateRouteForm = () => {
                     <Card.Body>
                         <Row className="Card-cell">
                             <Col className="Card-bold">Bus Arrives: </Col>
-                            <Col style={{ textAlign: 'right' }}>5:21 PM</Col>
+                            <Col style={{ textAlign: 'right' }}> Still WIP</Col>
                         </Row>
                         <Row className="Card-cell">
                             <Col className="Card-bold">Expected transit time</Col>
-                            <Col style={{ textAlign: 'right' }}>15 minutes</Col>
+                            <Col style={{ textAlign: 'right' }}>{minuteTimes/60000} minutes</Col>
                         </Row>
                         <Row className="Card-cell">
                             <Col className="Card-bold">Expected time of Arrival</Col>
-                            <Col style={{ textAlign: 'right' }}>5:36</Col>
+                            <Col style={{ textAlign: 'right' }}>Still WIP</Col>
                         </Row>
                     </Card.Body>
                 </Card>
