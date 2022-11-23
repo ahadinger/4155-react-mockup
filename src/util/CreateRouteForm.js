@@ -6,10 +6,10 @@ import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { useQuery } from "react-query";
-import { getAllStops } from "./api";
+import { getAllStops, getRoutes } from "./api";
 import '../PopUp.css';
-import routes from "../routes.json";
-import { isIndexSignatureDeclaration } from "typescript";
+//import routes from "../routes.json";
+
 
 
 
@@ -22,16 +22,21 @@ export const CreateRouteForm = () => {
 
     const [minuteTimes,setTimes] =  useState(null)
 
+
+    const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes());
+    const routes = areRoutesLoading ? [] : routes_data;
+    console.log(routes)
+
     const { data, isLoading } = useQuery("getStops", () => getAllStops());
     const stops = isLoading ? [] : data;
+    console.log(stops)
 
     const route_list = [];
-
     for (let i = 0; i < routes.length; i++) {
         route_list.push(
             <>
-                <option value={routes[i]['id']}
-                    >{routes[i]['name']}</option>
+                <option value={routes[i].id}
+                    >{routes[i].name}</option>
             </>
         )
     }
@@ -76,12 +81,13 @@ export const CreateRouteForm = () => {
         setStartStop(null)
         setEndStop(null)
         const tempList = []
-        for(const stop of stops){
-            if (stop['routeList'].includes(routeName)){
+        for(let i = 0; i < stops.length; i++){
+            console.log(stops[i]['routeList'])
+            if (stops[i]['routeList'].includes(routeName)){
                 tempList.push(
                     <>
-                        <option value={stop['id']}
-                            >{stop['name']}</option>
+                        <option value={stops[i]['id']}
+                            >{stops[i]['name']}</option>
                     </>
                 )
             } 
@@ -91,7 +97,7 @@ export const CreateRouteForm = () => {
 
     function getListofStops(routeName){
         const tempList = []
-        for(const stop of stops){
+        for(let stop of stops){
             if (stop['routeList'].includes(routeName)){
                 tempList.push(
                     stop['id']

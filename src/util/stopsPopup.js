@@ -2,11 +2,13 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import '../PopUp.css';
+
 //need to get the data in the future
 
 export const showStopPopup = (stop) => {
     const rows = [];
     for(let i = 0; i < stop['routeList'].length; i++){
+        
         rows.push(
             <>
             <Row className="Card-cell">

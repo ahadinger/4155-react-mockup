@@ -1,5 +1,5 @@
 import { Stop } from "../types/Stop";
-import routes from "../routes.json";
+import { Route } from "../types/Route";
 
 export const getBusLocations = async () => {
   const res = await fetch(
@@ -18,7 +18,7 @@ export const getBusLocations = async () => {
   return (await res.json()).buses;
 };
 
-export const getRoutes = async () => {
+export const getRoutes = async (): Promise<Route[]> => {
   const res = await fetch(
     "https://passio3.com/www/mapGetData.php?getStops=2&deviceId=1720493&withOutdated=1&wBounds=1&showBusInOos=0&lat=35.3083779&lng=-80.7325179&wTransloc=1",
     {
@@ -32,7 +32,24 @@ export const getRoutes = async () => {
       mode: "cors",
     }
   );
-  return (await res.json()).routes;
+
+  const raw_routes = (await res.json()).routes;
+  let routes:Route[] = [];
+
+  for(const route in raw_routes){
+    let list_of_stops_in_route = []
+    for(let i = 3; i < raw_routes[route].length; i++){
+      list_of_stops_in_route.push(raw_routes[route][i][1])
+    }
+    let routeObj: Route = {
+      id: route,
+      name: raw_routes[route][0],
+      stops: list_of_stops_in_route,
+
+    }
+    routes.push(routeObj);
+  };
+  return routes as Route[];
 };
 
 export const getAllStops = async (): Promise<Stop[]> => {
@@ -49,22 +66,49 @@ export const getAllStops = async (): Promise<Stop[]> => {
       mode: "cors",
     }
   );
+  
   return Array.from(Object.values((await res.json()).stops))
     .flat()
     .map((el: any) => {
       el["location"] = { lat: el.latitude, lng: el.longitude };
-      el["routeList"] = getStopRouteId(el.id);
-      el["routeNameList"] = getStopRouteName(el.id);
+      getStopRouteId(el.id)
+      .then(
+        function(result){
+          el["routeList"] = result;
+        }
+      )
+      .catch(
+        function(reason){
+          console.warn(el.id + " " + reason)
+          el["routeList"] = [el["routeId"]];
+        }
+      );
+      getStopRouteName(el.id)
+      .then(
+        function(result){
+          el["routeNameList"] = result;
+        }
+      )
+      .catch(
+        function(error){
+          el["routeNameList"] = [el["routeName"]];
+        }
+      );
+      console.log(el)
       return el;
     }) as Stop[];
 };
 
 
-function getStopRouteId(stopId:string):string[] {
-  const r_arr:string[] = []
-  for(const route of routes){
-    for(let i = 0; i < route['stops'].length; i++){
-      if (route['stops'][i] == stopId){
+async function getStopRouteId(stopId: string): Promise<string[]> {
+  console.log("getting Route IDs for stop " + stopId)
+  const r_arr: string[] = []
+
+  const result = await getRoutes()
+  for (const route of result) {
+    for (let i = 0; i < route.stops.length; i++) {
+
+      if (route.stops[i] == stopId) {
         const temp = []
         r_arr.push(route.id);
       }
@@ -73,15 +117,19 @@ function getStopRouteId(stopId:string):string[] {
   return r_arr;
 }
 
-function getStopRouteName(stopId:string):string[] {
+
+async function getStopRouteName(stopId:string): Promise<string[]> {
+  const result = await getRoutes()
   const r_arr:string[] = []
-  for(const route of routes){
-    for(let i = 0; i < route['stops'].length; i++){
-      if (route['stops'][i] == stopId){
-        const temp = []
-        r_arr.push(route.name);
+
+      for(const route of result){
+        for(let i = 0; i < route.stops.length; i++){
+          if (route.stops[i] == stopId){
+            const temp = []
+            r_arr.push(route.name);
+          }
+        }
       }
-    }
-  }
+
   return r_arr;
 }

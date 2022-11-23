@@ -1,7 +1,6 @@
   export interface Route {
-    id:        string;
-    name:         string;
-    color:  string;
-    stops: [];
+    id:         string;
+    name:       string;
+    stops:      string[];
   }
 
