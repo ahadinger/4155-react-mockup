@@ -23,13 +23,11 @@ export const CreateRouteForm = () => {
     const [minuteTimes,setTimes] =  useState(null)
 
 
-    const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes());
+    const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getAllRoutes", () => getRoutes());
     const routes = areRoutesLoading ? [] : routes_data;
-    console.log(routes)
 
-    const { data, isLoading } = useQuery("getStops", () => getAllStops());
-    const stops = isLoading ? [] : data;
-    console.log(stops)
+    const { data:stops_data, isLoading:areStopsLoading } = useQuery("getAllStops", () => getAllStops());
+    const stops = areStopsLoading ? [] : stops_data;
 
     const route_list = [];
     for (let i = 0; i < routes.length; i++) {
@@ -77,13 +75,14 @@ export const CreateRouteForm = () => {
         console.log("Ending at " +endStop);
     }
 
-    function updateStopsList(routeName){
+    function updateStopsList(routeId){
         setStartStop(null)
         setEndStop(null)
+        setTimes(0)
         const tempList = []
         for(let i = 0; i < stops.length; i++){
-            console.log(stops[i]['routeList'])
-            if (stops[i]['routeList'].includes(routeName)){
+            
+            if (stops[i]['routeList'].includes(routeId)){
                 tempList.push(
                     <>
                         <option value={stops[i]['id']}
@@ -95,10 +94,10 @@ export const CreateRouteForm = () => {
         setStopList(tempList)
     }
 
-    function getListofStops(routeName){
+    function getListofStops(routeId){
         const tempList = []
         for(let stop of stops){
-            if (stop['routeList'].includes(routeName)){
+            if (stop['routeList'].includes(routeId)){
                 tempList.push(
                     stop['id']
                 )

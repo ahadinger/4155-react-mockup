@@ -94,14 +94,12 @@ export const getAllStops = async (): Promise<Stop[]> => {
           el["routeNameList"] = [el["routeName"]];
         }
       );
-      console.log(el)
       return el;
     }) as Stop[];
 };
 
 
 async function getStopRouteId(stopId: string): Promise<string[]> {
-  console.log("getting Route IDs for stop " + stopId)
   const r_arr: string[] = []
 
   const result = await getRoutes()
