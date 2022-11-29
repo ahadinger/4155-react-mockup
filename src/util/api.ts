@@ -41,6 +41,7 @@ export const getRoutes = async (): Promise<Route[]> => {
     for(let i = 3; i < raw_routes[route].length; i++){
       list_of_stops_in_route.push(raw_routes[route][i][1])
     }
+    //let name = raw_routes[route][0];
     let routeObj: Route = {
       id: route,
       name: raw_routes[route][0],
@@ -67,35 +68,15 @@ export const getAllStops = async (): Promise<Stop[]> => {
     }
   );
   
-  return Array.from(Object.values((await res.json()).stops))
+  return await Promise.all(Array.from(Object.values((await res.json()).stops))
     .flat()
-    .map((el: any) => {
+    .map (async (el: any) => {
       el["location"] = { lat: el.latitude, lng: el.longitude };
-      getStopRouteId(el.id)
-      .then(
-        function(result){
-          el["routeList"] = result;
-        }
-      )
-      .catch(
-        function(reason){
-          console.warn(el.id + " " + reason)
-          el["routeList"] = [el["routeId"]];
-        }
-      );
-      getStopRouteName(el.id)
-      .then(
-        function(result){
-          el["routeNameList"] = result;
-        }
-      )
-      .catch(
-        function(error){
-          el["routeNameList"] = [el["routeName"]];
-        }
-      );
+      el["routeList"] = await getStopRouteId(el.id)
+      el["routeNameList"] = await getStopRouteName(el.id)
+      
       return el;
-    }) as Stop[];
+    })) as Stop[];
 };
 
 

@@ -23,10 +23,10 @@ export const CreateRouteForm = () => {
     const [minuteTimes,setTimes] =  useState(null)
 
 
-    const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getAllRoutes", () => getRoutes());
+    const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes());
     const routes = areRoutesLoading ? [] : routes_data;
 
-    const { data:stops_data, isLoading:areStopsLoading } = useQuery("getAllStops", () => getAllStops());
+    const { data:stops_data, isLoading:areStopsLoading } = useQuery("getStops", () => getAllStops());
     const stops = areStopsLoading ? [] : stops_data;
 
     const route_list = [];
