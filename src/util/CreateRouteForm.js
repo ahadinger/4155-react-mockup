@@ -6,10 +6,10 @@ import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { useQuery } from "react-query";
-import { getAllStops } from "./api";
+import { getAllStops, getRoutes } from "./api";
 import '../PopUp.css';
-import routes from "../routes.json";
-import { isIndexSignatureDeclaration } from "typescript";
+//import routes from "../routes.json";
+
 
 
 
@@ -22,16 +22,19 @@ export const CreateRouteForm = () => {
 
     const [minuteTimes,setTimes] =  useState(null)
 
-    const { data, isLoading } = useQuery("getStops", () => getAllStops());
-    const stops = isLoading ? [] : data;
+
+    const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes());
+    const routes = areRoutesLoading ? [] : routes_data;
+
+    const { data:stops_data, isLoading:areStopsLoading } = useQuery("getStops", () => getAllStops());
+    const stops = areStopsLoading ? [] : stops_data;
 
     const route_list = [];
-
     for (let i = 0; i < routes.length; i++) {
         route_list.push(
             <>
-                <option value={routes[i]['id']}
-                    >{routes[i]['name']}</option>
+                <option value={routes[i].id}
+                    >{routes[i].name}</option>
             </>
         )
     }
@@ -72,16 +75,18 @@ export const CreateRouteForm = () => {
         console.log("Ending at " +endStop);
     }
 
-    function updateStopsList(routeName){
+    function updateStopsList(routeId){
         setStartStop(null)
         setEndStop(null)
+        setTimes(0)
         const tempList = []
-        for(const stop of stops){
-            if (stop['routeList'].includes(routeName)){
+        for(let i = 0; i < stops.length; i++){
+            
+            if (stops[i]['routeList'].includes(routeId)){
                 tempList.push(
                     <>
-                        <option value={stop['id']}
-                            >{stop['name']}</option>
+                        <option value={stops[i]['id']}
+                            >{stops[i]['name']}</option>
                     </>
                 )
             } 
@@ -89,10 +94,10 @@ export const CreateRouteForm = () => {
         setStopList(tempList)
     }
 
-    function getListofStops(routeName){
+    function getListofStops(routeId){
         const tempList = []
-        for(const stop of stops){
-            if (stop['routeList'].includes(routeName)){
+        for(let stop of stops){
+            if (stop['routeList'].includes(routeId)){
                 tempList.push(
                     stop['id']
                 )
