@@ -14,7 +14,6 @@ import greenPath from "./greenroute.json";
 import silverPath from "./silverroute.json";
 import shoppingPath from "./shoppingroute.json";
 import { useQuery } from "react-query";
-import { getAllStops } from "./util/api";
 import {
   silverOptions,
   greenOptions,
@@ -23,7 +22,7 @@ import {
   defaultCenter,
 } from "./constants/map";
 
-import { getBusLocations } from "./util/api";
+import { getBusLocations, getAllStops } from "./util/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { getBusMarkerData } from "./util/bus";
