@@ -9,12 +9,8 @@ import { useQuery } from "react-query";
 import { getRoutes, getRoutePoints } from "./api";
 import '../PopUp.css';
 //import routes from "../routes.json";
-
-
-
-
 export const MapFilterForm = () => {
-    const [selectedRoute,setSelectedRoute] =  useState(null)
+    const [selectedRoutes,setSelectedRoutes] =  useState(null)
 
     const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes());
     const routes = areRoutesLoading ? [] : routes_data;
@@ -23,21 +19,57 @@ export const MapFilterForm = () => {
     const points = arePointsLoaded ? [] : points_data;
 
     function handleChange(e) {
-        setStartStop(e.target.value)
+        let r = []
+        if(selectedRoutes != null){
+            r = selectedRoutes;
+        }
+
+        if (!e.target.checked){
+            const index = r.indexOf(e.target.id);
+            if (index > -1) { // only splice array when item is found
+                r.splice(index, 1); // 2nd parameter means remove one item only
+                
+            }
+            setSelectedRoutes(r)
+        }
+        else{
+            r.push(e.target.id)
+            setSelectedRoutes(r)
+        }
+        console.log(selectedRoutes)
     }
 
-    useEffect(()=>{
-        const startStop = document.querySelector("#startStop")
-        const endStop = document.querySelector("#endStop")
-        startStop.value = startStop.defaultSelected
-        endStop.value = endStop.defaultSelected
-    },[stopList])
+    const route_list = [];
+    for (let i = 0; i < routes.length; i++) {
+        let checked = false
+        //if(routes[i]['name'] == "Silver" || routes[i]['name'] == "Route Green"){
+            //checked = true
+        //}
+        route_list.push(
+            <>
+                <Form.Check
+                    type={"checkbox"}
+                    onChange={handleChange}
+                    label={`${routes[i].name}`}
+                    id={`${routes[i].id}`}
+                    defaultChecked={checked}
+                />
+            </>
+        )
+    }
 
+    var left = 0 + 'px';
+    var bottom = 0 + 'px';
+    var padding = 10 + 'px';
     return (
-            <Container>
-                <Form>
-                    
-                </Form>
-            </Container>
+        <div style={{padding, left, bottom,position:'absolute', zIndex: 1, display: 'flex'}}>
+            <Card>
+                <Card.Body>
+                    <Form>
+                        {route_list}
+                    </Form>
+                </Card.Body>
+            </Card>
+        </div>
     )
 }

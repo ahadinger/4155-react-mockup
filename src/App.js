@@ -5,6 +5,7 @@ import Header from "./Header";
 import Banner from "./Banner";
 import MapContainer from "./MapContainer";
 import CreateRouteButton from "./CreateRoute";
+import { MapFilterForm } from "./util/MapFilter";
 import { useState } from "react";
 function App() {
   const stopState = useState(null)
@@ -13,6 +14,7 @@ function App() {
       <Header stopState={stopState}/>
       <Banner />
       <CreateRouteButton/>
+      <MapFilterForm/>
       <MapContainer stopState={stopState}/>
     </Fragment>
   );
