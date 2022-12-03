@@ -9,8 +9,7 @@ import { useQuery } from "react-query";
 import { getRoutes, getRoutePoints } from "./api";
 import '../PopUp.css';
 //import routes from "../routes.json";
-export const MapFilterForm = () => {
-    const [selectedRoutes,setSelectedRoutes] =  useState(null)
+export const MapFilterForm = ({mapFilters, setMapFilters}) => {
 
     const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes());
     const routes = areRoutesLoading ? [] : routes_data;
@@ -19,32 +18,26 @@ export const MapFilterForm = () => {
     const points = arePointsLoaded ? [] : points_data;
 
     function handleChange(e) {
-        let r = []
-        if(selectedRoutes != null){
-            r = selectedRoutes;
-        }
-
         if (!e.target.checked){
-            const index = r.indexOf(e.target.id);
+            const index = mapFilters.indexOf(e.target.id);
             if (index > -1) { // only splice array when item is found
-                r.splice(index, 1); // 2nd parameter means remove one item only
+                mapFilters.splice(index, 1); // 2nd parameter means remove one item only
                 
             }
-            setSelectedRoutes(r)
+            setMapFilters(mapFilters)
         }
         else{
-            r.push(e.target.id)
-            setSelectedRoutes(r)
+            mapFilters.push(e.target.id)
+            setMapFilters(mapFilters)
         }
-        console.log(selectedRoutes)
     }
 
     const route_list = [];
     for (let i = 0; i < routes.length; i++) {
         let checked = false
-        //if(routes[i]['name'] == "Silver" || routes[i]['name'] == "Route Green"){
-            //checked = true
-        //}
+        if(routes[i]['name'] == "Silver" || routes[i]['name'] == "Route Green"){
+            checked = true
+        }
         route_list.push(
             <>
                 <Form.Check

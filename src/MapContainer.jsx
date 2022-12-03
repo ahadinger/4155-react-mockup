@@ -22,7 +22,7 @@ import {
   defaultCenter,
 } from "./constants/map";
 
-import { getBusLocations, getAllStops } from "./util/api";
+import { getBusLocations, getAllStops, getRoutePoints, getRoutes } from "./util/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { getBusMarkerData } from "./util/bus";
@@ -31,13 +31,14 @@ import { SlidingMarker } from "./util/SlidingMarker";
 import { showStopPopup } from "./util/stopsPopup";
 import { setMap as setGlobalMap } from "./constants/map";
 
-export const MapContainer = ({ stopState }) => {
+export const MapContainer = ({ stopState, mapFilters}) => {
   const [map, setMap] = React.useState(null);
   const [loaded, setLoaded] = useState(false);
   const [selectedStop, setSelectedStop] = stopState;
   const [locations, setLocations] = useState([]);
   const [markers, setMarkers] = useState({});
 
+  console.log(mapFilters)
   const onLoad = useCallback((map) => {
     setLoaded(true);
     setMap(map);
@@ -53,6 +54,13 @@ export const MapContainer = ({ stopState }) => {
 
   const { data, isLoading } = useQuery("getStops", () => getAllStops());
   const stops = isLoading ? [] : data;
+
+  const { data:routePoints, isLoading:arePointesLoaded } = useQuery("getRoutePoints", () => getRoutePoints());
+  const rointPoints = arePointesLoaded ? [] : routePoints;
+
+  const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes());
+  const all_routes = areRoutesLoading ? [] : routes_data;
+  console.log(all_routes)
 
   const handleLocations = (json) => {
     setLocations(Object.values(json).flat());
@@ -94,6 +102,66 @@ export const MapContainer = ({ stopState }) => {
       }
     });
   }, [locations, loaded, markers, map]);
+
+  const getRouteLines = (input) => {
+    let output = []
+    for (let i = 0; i < input.length; i++){
+      output.push(
+        <>
+          <PolylineF path={getPointsFromId(input[i])} options={getOptionsForPath(input[i])} />
+        </>
+      )
+    }
+    return output;
+  }
+
+  function getPointsFromId(id){
+    for (let i = 0; i < rointPoints.length; i++){
+      if(rointPoints[i].id == id){
+        return cleanLngAndLat(rointPoints[i].points);
+      }
+    }
+  }
+
+  function getRouteFromId(id){
+    for (let i = 0; i < all_routes.length; i++){
+      if(all_routes[i].id == id){
+        return all_routes[i];
+      }
+    }
+  }
+
+  function cleanLngAndLat(points){
+    for(let i = 0; i < points.length; i++){
+      let temp_x = points[i]["lat"]
+      let temp_y = points[i]["lng"]
+      points[i]["lat"] = parseFloat(temp_x)
+      points[i]["lng"] = parseFloat(temp_y)
+    }
+    return points
+  }
+
+  function getOptionsForPath(id){
+    let route = getRouteFromId(id);
+    let color = "";
+    console.log(route)
+    if(route == undefined){
+      color = "#a8a8a8"
+    }
+    else{
+      color = route['color']
+    }
+    const options = {
+      strokeColor: color,
+      strokeOpacity: 0.8,
+      strokeWeight: 5,
+      clickable: false,
+      draggable: false,
+      editable: false,
+      visible: true,
+    };
+    return options;
+  }
 
   const getStopsContent = (stops) =>
     stops.map((item) => {
@@ -164,10 +232,8 @@ export const MapContainer = ({ stopState }) => {
           center={defaultCenter}
         >
           {getStopsContent(stops)}
-
-          <PolylineF path={greenPath} options={greenOptions} />
-          <PolylineF path={silverPath} options={silverOptions} />
-          <PolylineF path={shoppingPath} options={shoppingShuttleOptions} />
+          {getRouteLines(mapFilters)}
+         
         </GoogleMap>
       </LoadScript>
     </Fragment>

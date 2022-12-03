@@ -2,6 +2,8 @@ import { Stop } from "../types/Stop";
 import { Route } from "../types/Route";
 import {RoutePoints} from "../types/RoutePoints";
 
+const routeblacklist = ['3406', '26294']
+
 export const getBusLocations = async () => {
   const res = await fetch(
     "https://passio3.com/www/mapGetData.php?getBuses=1&deviceId=3367966&wTransloc=1",
@@ -39,6 +41,9 @@ export const getRoutes = async (): Promise<Route[]> => {
 
   for(const route in raw_routes){
     let list_of_stops_in_route = []
+    if(routeblacklist.includes(route)){
+      continue;
+    }
     for(let i = 3; i < raw_routes[route].length; i++){
       list_of_stops_in_route.push(raw_routes[route][i][1])
     }
@@ -46,6 +51,7 @@ export const getRoutes = async (): Promise<Route[]> => {
     let routeObj: Route = {
       id: route,
       name: raw_routes[route][0],
+      color: raw_routes[route][1],
       stops: list_of_stops_in_route,
 
     }
@@ -134,21 +140,15 @@ export const getRoutePoints = async (): Promise<RoutePoints[]> => {
   let rp:RoutePoints[] = [];
   
   for(const route in raw_data){
-    //let temp_arr:any = raw_data[route][0];
-    /* for(let i = 0; i < raw_data[route][0].length; i++){
-      let idkwahttonamethis:any = {lat: 0, lng: 0}
-      idkwahttonamethis["lat"] = parseFloat(raw_data[route][0][i]["lat"])
-      idkwahttonamethis["lng"] = parseFloat(raw_data[route][0][i]["lng"])
-      //console.log(idkwahttonamethis)
-      temp_arr.push(idkwahttonamethis)
-    } */
     //let name = raw_routes[route][0];
+    if(routeblacklist.includes(route)){
+      continue;
+    }
     let routeObj: RoutePoints = {
       id: route,
       points: raw_data[route][0],
 
     }
-    
     rp.push(routeObj);
   };
   return rp;

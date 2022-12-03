@@ -9,13 +9,15 @@ import { MapFilterForm } from "./util/MapFilter";
 import { useState } from "react";
 function App() {
   const stopState = useState(null)
+  const [mapFilters, setMapFilters] =  useState(["16380", "3201"])
+
   return (
     <Fragment>
       <Header stopState={stopState}/>
       <Banner />
       <CreateRouteButton/>
-      <MapFilterForm/>
-      <MapContainer stopState={stopState}/>
+      <MapFilterForm mapFilters={mapFilters} setMapFilters = {setMapFilters}/>
+      <MapContainer stopState={stopState} mapFilters={mapFilters}/>
     </Fragment>
   );
 }
