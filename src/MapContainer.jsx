@@ -60,7 +60,6 @@ export const MapContainer = ({ stopState, mapFilters}) => {
 
   const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes());
   const all_routes = areRoutesLoading ? [] : routes_data;
-  console.log(all_routes)
 
   const handleLocations = (json) => {
     setLocations(Object.values(json).flat());
@@ -144,7 +143,6 @@ export const MapContainer = ({ stopState, mapFilters}) => {
   function getOptionsForPath(id){
     let route = getRouteFromId(id);
     let color = "";
-    console.log(route)
     if(route == undefined){
       color = "#a8a8a8"
     }
@@ -168,32 +166,37 @@ export const MapContainer = ({ stopState, mapFilters}) => {
       if(item.routeName == "Charter"){
         return;
       }
-      return (
-        <MarkerF
-          icon={{
-            url: BusStop,
-            scale: 0.05,
-          }}
-          position={item.location}
-          onClick={() => {
-            setSelectedStop(item);
-          }}
-        >
-          {selectedStop === item ? (
-            <InfoWindowF
-              onCloseClick={() => setSelectedStop(null)}
-              position={selectedStop.location}
-              options={{
-                shouldFocus: true,
-                minWidth: 350,
-                maxWidth: 350,
+      for (let i = 0; i < mapFilters.length; i++){
+        if(item.routeList.includes(mapFilters[i])){
+          return (
+            <MarkerF
+              icon={{
+                url: BusStop,
+                scale: 0.05,
+              }}
+              position={item.location}
+              onClick={() => {
+                setSelectedStop(item);
               }}
             >
-              {showStopPopup(selectedStop)}
-            </InfoWindowF>
-          ) : null}
-        </MarkerF>
-      );
+              {selectedStop === item ? (
+                <InfoWindowF
+                  onCloseClick={() => setSelectedStop(null)}
+                  position={selectedStop.location}
+                  options={{
+                    shouldFocus: true,
+                    minWidth: 350,
+                    maxWidth: 350,
+                  }}
+                >
+                  {showStopPopup(selectedStop)}
+                </InfoWindowF>
+              ) : null}
+            </MarkerF>
+          );
+        }
+      }
+      
     });
 
   return (
