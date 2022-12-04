@@ -22,7 +22,7 @@ import {
   defaultCenter,
 } from "./constants/map";
 
-import { getBusLocations, getAllStops, getRoutePoints, getRoutes } from "./util/api";
+import { getBusLocations, getAllStops, getRoutePoints, getRoutes,fetchRoutes } from "./util/api";
 import { useEffect } from "react";
 import { useCallback } from "react";
 import { getBusMarkerData } from "./util/bus";
@@ -51,15 +51,56 @@ export const MapContainer = ({ stopState, mapFilters}) => {
     west: -80.75576478679214,
     east: -80.71247424385233,
   };
+  const { data: res } = useQuery("getRouteStops", () => fetchRoutes())
 
-  const { data, isLoading } = useQuery("getStops", () => getAllStops());
-  const stops = isLoading ? [] : data;
+  const { data, isLoading } = useQuery("getStops", () => getAllStops(res), { enabled: !!res });
+  const stops = !data ? [] : data;
 
-  const { data:routePoints, isLoading:arePointesLoaded } = useQuery("getRoutePoints", () => getRoutePoints());
-  const rointPoints = arePointesLoaded ? [] : routePoints;
+  const { data: points_data } = useQuery("getRoutePoints", () => getRoutePoints(res), { enabled: !!res });
+  const points = !points_data ? [] : points_data;
 
-  const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes());
+  const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes(res));
   const all_routes = areRoutesLoading ? [] : routes_data;
+
+
+
+  const getPointsFromId =(id)=>{
+    for (let i = 0; i < points.length; i++){
+      if(points[i].id == id){
+        return cleanLngAndLat(points[i].points);
+      }
+    }
+  }
+
+  const getRouteFromId = (id)=>{
+    for (let i = 0; i < all_routes.length; i++){
+      if(all_routes[i].id == id){
+        return all_routes[i];
+      }
+    }
+  }
+
+  const getOptionsForPath = (id)=>{
+    let route = getRouteFromId(id);
+    let color = "";
+    console.log(route)
+    if(route == undefined){
+      color = "#a8a8a8"
+    }
+    else{
+      color = route['color']
+    }
+    const options = {
+      strokeColor: color,
+      strokeOpacity: 0.8,
+      strokeWeight: 5,
+      clickable: false,
+      draggable: false,
+      editable: false,
+      visible: true,
+    };
+    return options;
+  }
 
   const handleLocations = (json) => {
     setLocations(Object.values(json).flat());
@@ -103,32 +144,14 @@ export const MapContainer = ({ stopState, mapFilters}) => {
   }, [locations, loaded, markers, map]);
 
   const getRouteLines = (input) => {
-    let output = []
-    for (let i = 0; i < input.length; i++){
-      output.push(
-        <>
-          <PolylineF path={getPointsFromId(input[i])} options={getOptionsForPath(input[i])} />
-        </>
+    console.log("GETTING LINES",input)
+    return input.map(el=>
+          <PolylineF path={getPointsFromId(el)} options={getOptionsForPath(el)} />
       )
-    }
-    return output;
+
   }
 
-  function getPointsFromId(id){
-    for (let i = 0; i < rointPoints.length; i++){
-      if(rointPoints[i].id == id){
-        return cleanLngAndLat(rointPoints[i].points);
-      }
-    }
-  }
 
-  function getRouteFromId(id){
-    for (let i = 0; i < all_routes.length; i++){
-      if(all_routes[i].id == id){
-        return all_routes[i];
-      }
-    }
-  }
 
   function cleanLngAndLat(points){
     for(let i = 0; i < points.length; i++){
@@ -140,26 +163,7 @@ export const MapContainer = ({ stopState, mapFilters}) => {
     return points
   }
 
-  function getOptionsForPath(id){
-    let route = getRouteFromId(id);
-    let color = "";
-    if(route == undefined){
-      color = "#a8a8a8"
-    }
-    else{
-      color = route['color']
-    }
-    const options = {
-      strokeColor: color,
-      strokeOpacity: 0.8,
-      strokeWeight: 5,
-      clickable: false,
-      draggable: false,
-      editable: false,
-      visible: true,
-    };
-    return options;
-  }
+ 
 
   const getStopsContent = (stops) =>
     stops.map((item) => {

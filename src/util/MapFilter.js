@@ -1,26 +1,28 @@
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import { useQuery } from "react-query";
-import { getRoutes, getRoutePoints } from "./api";
+import { getRoutes, getRoutePoints, fetchRoutes } from "./api";
+import '../PopUp.css';
+//import routes from "../routes.json";
+export const MapFilterForm = ({ mapFilters, setMapFilters }) => {
 
-export const MapFilterForm = ({mapFilters, setMapFilters}) => {
+    const { data: res, isLoading: apiLoading } = useQuery("getRouteStops", () => fetchRoutes())
 
-    const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes());
-    const routes = areRoutesLoading ? [] : routes_data;
+    const { data: routes_data, isLoading: areRoutesLoading, status } = useQuery("getRoutes", () => getRoutes(res), { enabled: !!res });
+    const routes = !routes_data ? [] : routes_data;
 
-    const { data:points_data, isLoading:arePointsLoaded } = useQuery("getRoutePoints", () => getRoutePoints());
-    const points = arePointsLoaded ? [] : points_data;
 
     function handleChange(e) {
-        if (!e.target.checked){
+        console.log("CHANGING")
+        if (!e.target.checked) {
             const index = mapFilters.indexOf(e.target.id);
             if (index > -1) { // only splice array when item is found
                 mapFilters.splice(index, 1); // 2nd parameter means remove one item only
-                
+
             }
             setMapFilters(mapFilters)
         }
-        else{
+        else {
             mapFilters.push(e.target.id)
             setMapFilters(mapFilters)
         }
@@ -29,7 +31,7 @@ export const MapFilterForm = ({mapFilters, setMapFilters}) => {
     const route_list = [];
     for (let i = 0; i < routes.length; i++) {
         let checked = false
-        if(routes[i]['name'] == "Silver" || routes[i]['name'] == "Route Green"){
+        if (routes[i]['name'] == "Silver" || routes[i]['name'] == "Route Green") {
             checked = true
         }
         route_list.push(
@@ -49,7 +51,7 @@ export const MapFilterForm = ({mapFilters, setMapFilters}) => {
     var bottom = 0 + 'px';
     var padding = 10 + 'px';
     return (
-        <div style={{padding, left, bottom,position:'absolute', zIndex: 1, display: 'flex'}}>
+        <div style={{ padding, left, bottom, position: 'absolute', zIndex: 1, display: 'flex' }}>
             <Card>
                 <Card.Body>
                     <Form>

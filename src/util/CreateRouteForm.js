@@ -6,8 +6,9 @@ import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { useQuery } from "react-query";
-import { getAllStops, getRoutes } from "./api";
+import { getAllStops, getRoutes,fetchRoutes } from "./api";
 import '../PopUp.css';
+
 //import routes from "../routes.json";
 
 
@@ -22,12 +23,14 @@ export const CreateRouteForm = () => {
 
     const [minuteTimes,setTimes] =  useState(null)
 
+    const { data: res } = useQuery("getRouteStops", () => fetchRoutes())
 
-    const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes());
-    const routes = areRoutesLoading ? [] : routes_data;
+    const { data: routes_data } = useQuery("getRoutes", () => getRoutes(res), { enabled: !!res });
 
-    const { data:stops_data, isLoading:areStopsLoading } = useQuery("getStops", () => getAllStops());
-    const stops = areStopsLoading ? [] : stops_data;
+    const routes = !routes_data ? [] : routes_data;
+
+    const { data:stops_data } = useQuery("getStops", () => getAllStops(res),{ enabled: !!res });
+    const stops = !stops_data ? [] : stops_data;
 
     const route_list = [];
     for (let i = 0; i < routes.length; i++) {
@@ -80,6 +83,8 @@ export const CreateRouteForm = () => {
         setEndStop(null)
         setTimes(0)
         const tempList = []
+        console.log("STOPS",stops)
+
         for(let i = 0; i < stops.length; i++){
             
             if (stops[i]['routeList'].includes(routeId)){
@@ -91,6 +96,7 @@ export const CreateRouteForm = () => {
                 )
             } 
         }
+        console.log("TEMPLIST",tempList)
         setStopList(tempList)
     }
 
