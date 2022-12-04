@@ -31,7 +31,7 @@ export const MapFilterForm = ({ mapFilters, setMapFilters }) => {
     const route_list = [];
     for (let i = 0; i < routes.length; i++) {
         let checked = false
-        if (routes[i]['name'] == "Silver" || routes[i]['name'] == "Route Green") {
+        if (mapFilters.includes(routes[i]['id'])) {
             checked = true
         }
         route_list.push(

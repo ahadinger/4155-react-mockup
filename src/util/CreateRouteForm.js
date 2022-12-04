@@ -14,7 +14,8 @@ import '../PopUp.css';
 
 
 
-export const CreateRouteForm = () => {
+export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
+    console.log(mapFilters)
     const [selectedRoute,setSelectedRoute] =  useState(null)
 
     const [startStop,setStartStop] =  useState(null)
@@ -48,9 +49,7 @@ export const CreateRouteForm = () => {
         if(selectedRoute !== e.target.value){ //avoid updating the stops list if it's not needed.
             updateStopsList(e.target.value)
         }
-
-        //in the future, selecting a route will only show stops that are in the route
-        //will probably be an extension of future filter feature.
+        setMapFilters([e.target.value])
     }
 
     function handleStart(e) {

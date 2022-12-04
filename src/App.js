@@ -15,8 +15,8 @@ function App() {
     <Fragment>
       <Header stopState={stopState}/>
       <Banner />
-      <CreateRouteButton/>
-      <MapFilterForm mapFilters={mapFilters} setMapFilters = {setMapFilters}/>
+      <CreateRouteButton mapFilters={mapFilters} setMapFilters = {setMapFilters}/>
+      
       <MapContainer stopState={stopState} mapFilters={mapFilters}/>
     </Fragment>
   );

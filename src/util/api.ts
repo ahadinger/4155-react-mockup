@@ -59,7 +59,7 @@ export const getRoutes = async (
     const routeStops: string[] = (raw_routes[routeId]
       .slice(3) as string[])
       .map((el) => el[1] as string)
-      console.log('ROUTESTOPS',routeStops)
+      //console.log('ROUTESTOPS',routeStops)
       // .map((el) => mapToStop(apiBody.stops[`ID${el}`]));
 
     let routeObj: Route = {
@@ -76,7 +76,7 @@ export const getRoutes = async (
 
 export const getAllStops = async (apiBody:RouteAPIResponse): Promise<Stop[]> => {
   if(!apiBody) return []
-  console.log("API BODY",apiBody)
+  //console.log("API BODY",apiBody)
   return Promise.all(Array.from(Object.values((apiBody.stops))).flat()
   .map(async el=>mapToStop(await getRoutes(apiBody),el)))
 };
@@ -86,7 +86,7 @@ async function getStopRouteId(
   stopId: string
 ): Promise<string[]> {
   const r_arr: string[] = [];
-  console.log("STOP ID ROUTE",routes)
+  ////console.log("STOP ID ROUTE",routes)
   for (const route of routes) {
     for (let i = 0; i < route.stops.length; i++) {
       if (route.stops[i] == stopId) {

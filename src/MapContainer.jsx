@@ -38,7 +38,6 @@ export const MapContainer = ({ stopState, mapFilters}) => {
   const [locations, setLocations] = useState([]);
   const [markers, setMarkers] = useState({});
 
-  console.log(mapFilters)
   const onLoad = useCallback((map) => {
     setLoaded(true);
     setMap(map);
@@ -83,7 +82,6 @@ export const MapContainer = ({ stopState, mapFilters}) => {
   const getOptionsForPath = (id)=>{
     let route = getRouteFromId(id);
     let color = "";
-    console.log(route)
     if(route == undefined){
       color = "#a8a8a8"
     }
@@ -144,7 +142,7 @@ export const MapContainer = ({ stopState, mapFilters}) => {
   }, [locations, loaded, markers, map]);
 
   const getRouteLines = (input) => {
-    console.log("GETTING LINES",input)
+    //console.log("GETTING LINES",input)
     return input.map(el=>
           <PolylineF path={getPointsFromId(el)} options={getOptionsForPath(el)} />
       )
