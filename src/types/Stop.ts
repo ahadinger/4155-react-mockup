@@ -10,7 +10,7 @@
     routeGroupId:   number;
     location: { lat: number; lng: number };
     position:string;
-    routeList: [];
-    routeNameList: [];
+    routeList: string[];
+    routeNameList: string[];
   }
 

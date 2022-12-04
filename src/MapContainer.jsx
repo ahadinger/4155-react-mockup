@@ -53,8 +53,8 @@ export const MapContainer = ({ stopState, mapFilters}) => {
   };
   const { data: res } = useQuery("getRouteStops", () => fetchRoutes())
 
-  const { data, isLoading } = useQuery("getStops", () => getAllStops());
-  const stops = isLoading ? [] : data;
+  const { data, isLoading } = useQuery("getStops", () => getAllStops(res), { enabled: !!res });
+  const stops = !data ? [] : data;
 
   const { data: points_data } = useQuery("getRoutePoints", () => getRoutePoints(res), { enabled: !!res });
   const points = !points_data ? [] : points_data;
@@ -65,23 +65,23 @@ export const MapContainer = ({ stopState, mapFilters}) => {
 
 
 
-  const getPointsFromId = useCallback((id)=>{
+  const getPointsFromId =(id)=>{
     for (let i = 0; i < points.length; i++){
       if(points[i].id == id){
         return cleanLngAndLat(points[i].points);
       }
     }
-  },[])
+  }
 
-  const getRouteFromId = useCallback((id)=>{
+  const getRouteFromId = (id)=>{
     for (let i = 0; i < all_routes.length; i++){
       if(all_routes[i].id == id){
         return all_routes[i];
       }
     }
-  },[all_routes])
+  }
 
-  const getOptionsForPath = useCallback((id)=>{
+  const getOptionsForPath = (id)=>{
     let route = getRouteFromId(id);
     let color = "";
     console.log(route)
@@ -101,7 +101,7 @@ export const MapContainer = ({ stopState, mapFilters}) => {
       visible: true,
     };
     return options;
-  },[getRouteFromId])
+  }
 
   const handleLocations = (json) => {
     setLocations(Object.values(json).flat());
@@ -144,12 +144,13 @@ export const MapContainer = ({ stopState, mapFilters}) => {
     });
   }, [locations, loaded, markers, map]);
 
-  const getRouteLines = useCallback((input) => {
+  const getRouteLines = (input) => {
+    console.log("GETTING LINES",input)
     return input.map(el=>
           <PolylineF path={getPointsFromId(el)} options={getOptionsForPath(el)} />
       )
 
-  },[getPointsFromId,getOptionsForPath])
+  }
 
 
 
