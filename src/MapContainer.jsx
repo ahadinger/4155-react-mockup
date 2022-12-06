@@ -143,6 +143,7 @@ export const MapContainer = ({ stopState, mapFilters}) => {
 
   const getRouteLines = (input) => {
     //console.log("GETTING LINES",input)
+    if(input == "Select a Route"){return} 
     return input.map(el=>
           <PolylineF path={getPointsFromId(el)} options={getOptionsForPath(el)} />
       )
