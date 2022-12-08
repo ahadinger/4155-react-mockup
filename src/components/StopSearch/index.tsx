@@ -1,14 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { getMap } from "../../constants/map";
+import { RouteAPIResponse } from "../../types/api";
 import { Stop } from "../../types/Stop";
-import { getAllStops } from "../../util/api";
+import { fetchRoutes, getAllStops } from "../../util/api";
 import styles from "./StopSearch.module.css";
 interface StopSearchProps {
   stopState: [Stop, React.Dispatch<React.SetStateAction<Stop>>];
 }
 const StopSearch = ({ stopState }: StopSearchProps) => {
-  const { data, isLoading } = useQuery("getStops", () => getAllStops());
+
+  const { data: res } = useQuery("getRouteStops", () => fetchRoutes())
+
+  
+  const { data, isLoading } = useQuery("getStops", () => getAllStops(res as RouteAPIResponse), { enabled: !!res });
   const stops = isLoading ? [] : (data as Stop[]);
   const [selectedStop, setSelectedStop] = stopState;
   const [searchQuery, setSearchQuery] = useState("");

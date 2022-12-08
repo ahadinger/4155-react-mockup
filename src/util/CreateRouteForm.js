@@ -6,14 +6,16 @@ import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import { useQuery } from "react-query";
-import { getAllStops, getRoutes } from "./api";
+import { getAllStops, getRoutes,fetchRoutes } from "./api";
 import '../PopUp.css';
+
 //import routes from "../routes.json";
 
 
 
 
-export const CreateRouteForm = () => {
+export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
+    console.log(mapFilters)
     const [selectedRoute,setSelectedRoute] =  useState(null)
 
     const [startStop,setStartStop] =  useState(null)
@@ -22,12 +24,14 @@ export const CreateRouteForm = () => {
 
     const [minuteTimes,setTimes] =  useState(null)
 
+    const { data: res } = useQuery("getRouteStops", () => fetchRoutes())
 
-    const { data:routes_data, isLoading:areRoutesLoading } = useQuery("getRoutes", () => getRoutes());
-    const routes = areRoutesLoading ? [] : routes_data;
+    const { data: routes_data } = useQuery("getRoutes", () => getRoutes(res), { enabled: !!res });
 
-    const { data:stops_data, isLoading:areStopsLoading } = useQuery("getStops", () => getAllStops());
-    const stops = areStopsLoading ? [] : stops_data;
+    const routes = !routes_data ? [] : routes_data;
+
+    const { data:stops_data } = useQuery("getStops", () => getAllStops(res),{ enabled: !!res });
+    const stops = !stops_data ? [] : stops_data;
 
     const route_list = [];
     for (let i = 0; i < routes.length; i++) {
@@ -45,9 +49,7 @@ export const CreateRouteForm = () => {
         if(selectedRoute !== e.target.value){ //avoid updating the stops list if it's not needed.
             updateStopsList(e.target.value)
         }
-
-        //in the future, selecting a route will only show stops that are in the route
-        //will probably be an extension of future filter feature.
+        setMapFilters([e.target.value])
     }
 
     function handleStart(e) {
@@ -80,6 +82,8 @@ export const CreateRouteForm = () => {
         setEndStop(null)
         setTimes(0)
         const tempList = []
+        console.log("STOPS",stops)
+
         for(let i = 0; i < stops.length; i++){
             
             if (stops[i]['routeList'].includes(routeId)){
@@ -91,6 +95,7 @@ export const CreateRouteForm = () => {
                 )
             } 
         }
+        console.log("TEMPLIST",tempList)
         setStopList(tempList)
     }
 
@@ -114,7 +119,7 @@ export const CreateRouteForm = () => {
         const endIndex = stopList.findIndex(obj => obj === endID)
         let i = startIndex
         while(i != endIndex){
-            const resp = await fetch(`http://198.71.63.67:4100/stops/timetostop/${stopList[i]}/${stopList[(i+1)%stopList.length]}`)
+            const resp = await fetch(`https://198.71.63.67:4100/stops/averagestoptimings/${stopList[i]}/${stopList[(i+1)%stopList.length]}`)
             const json = await resp.json()
             console.log(json.timeTaken)
             i= (i+1)%stopList.length;
