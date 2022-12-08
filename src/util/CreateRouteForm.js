@@ -27,7 +27,7 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
 
     const [minuteTimes,setTimes] =  useState(null)
     const [startTime,setStartTime] =  useState(null)
-
+    const [distance,setDistance] =  useState(null)
 
     const { data: res } = useQuery("getRouteStops", () => fetchRoutes())
 
@@ -75,7 +75,10 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
             console.log("please select two different stops")
         }
         else{
-            setTimes(await getTimeForRoute(startStop, endStop, selectedRoute))
+            let temp = await getTimeForRoute(startStop, endStop, selectedRoute)
+            setTimes(temp[0])
+            setDistance(temp[1])
+            console.log([temp[0], temp[1]] )
             setStartTime(await getTimeForBus(startStop, selectedRoute))
         }
         
@@ -119,7 +122,8 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
     }
 
     async function getTimeForRoute(startID, endID, selectedRoute){
-        let total = 0
+        let total_time = 0
+        let total_distance = 0
         const stopList = getListofStops(selectedRoute)
         const startIndex = stopList.findIndex(obj => obj === startID)
         const endIndex = stopList.findIndex(obj => obj === endID)
@@ -127,15 +131,16 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
         while(i != endIndex){
             const resp = await fetch(`http://198.71.63.67:4100/stops/averagestoptimings/${stopList[i]}/${stopList[(i+1)%stopList.length]}`)
             const json = await resp.json()
-            console.log(json)
+            //console.log(json)
             i= (i+1)%stopList.length;
             if(resp.status != 404){
-                total = total + json.timeTaken
+                total_time = total_time + json.timeTaken
+                total_distance = total_distance + json.distance
             }
             
         }
-        
-        return total 
+        //console.log([total_time, total_distance] )
+        return [total_time, total_distance] 
     }
 
     async function getTimeForBus(startID, selectedRoute){
@@ -149,6 +154,7 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
         }
         return total
     }
+
 
     function getTimeOfArrivalString(milliseconds){
         const date = new Date();
@@ -222,7 +228,8 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
                         </Row>
                         <Row className="Card-cell">
                             <Col className="Card-bold">Faster to walk:</Col>
-                            <Col style={{ textAlign: 'right' }}>Still WIP</Col>
+                            {console.log((distance/3)+  " " + (minuteTimes + startTime))}
+                            <Col style={{ textAlign: 'right' }}> { ((minuteTimes + startTime) > (distance/3)).toString().replace("t", "T").replace("f", "F")}</Col>
                         </Row>
                     </Card.Body>
                 </Card>

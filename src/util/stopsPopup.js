@@ -8,6 +8,7 @@ import { useQuery } from "react-query";
 export const showStopPopup = (stop, timeArray) => {
 
     function getTimingForRoute (routeId){
+        if(timeArray == undefined){return "No timing is availble for that stop, please refresh"}
         for(let i = 0; i < timeArray.length; i++){
             if(timeArray[i].routeId == routeId){
                 return timeArray[i].timeLeft
