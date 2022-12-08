@@ -119,7 +119,7 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
         const endIndex = stopList.findIndex(obj => obj === endID)
         let i = startIndex
         while(i != endIndex){
-            const resp = await fetch(`http://198.71.63.67:4100/stops/timetostop/${stopList[i]}/${stopList[(i+1)%stopList.length]}`)
+            const resp = await fetch(`https://198.71.63.67:4100/stops/averagestoptimings/${stopList[i]}/${stopList[(i+1)%stopList.length]}`)
             const json = await resp.json()
             console.log(json.timeTaken)
             i= (i+1)%stopList.length;
