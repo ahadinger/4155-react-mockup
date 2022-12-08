@@ -15,6 +15,9 @@ import '../PopUp.css';
 
 
 export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
+
+    
+    
     console.log(mapFilters)
     const [selectedRoute,setSelectedRoute] =  useState(null)
 
@@ -23,6 +26,8 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
     const [stopList,setStopList] =  useState(null)
 
     const [minuteTimes,setTimes] =  useState(null)
+    const [startTime,setStartTime] =  useState(null)
+
 
     const { data: res } = useQuery("getRouteStops", () => fetchRoutes())
 
@@ -71,6 +76,7 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
         }
         else{
             setTimes(await getTimeForRoute(startStop, endStop, selectedRoute))
+            setStartTime(await getTimeForBus(startStop, selectedRoute))
         }
         
         console.log("Starting from " + startStop);
@@ -119,9 +125,9 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
         const endIndex = stopList.findIndex(obj => obj === endID)
         let i = startIndex
         while(i != endIndex){
-            const resp = await fetch(`http://198.71.63.67:4100/stops/timetostop/${stopList[i]}/${stopList[(i+1)%stopList.length]}`)
+            const resp = await fetch(`http://198.71.63.67:4100/stops/averagestoptimings/${stopList[i]}/${stopList[(i+1)%stopList.length]}`)
             const json = await resp.json()
-            console.log(json.timeTaken)
+            console.log(json)
             i= (i+1)%stopList.length;
             if(resp.status != 404){
                 total = total + json.timeTaken
@@ -130,6 +136,30 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
         }
         
         return total 
+    }
+
+    async function getTimeForBus(startID, selectedRoute){
+        let total = 0
+        const resp = await fetch(`http://198.71.63.67:4100/stops/timetostop/${startID}/`)
+        const json = await resp.json();
+        for(let i = 0; i < json.length; i++){
+            if (json[i].routeId == selectedRoute){
+                total = json[i].timeLeft
+            }
+        }
+        return total
+    }
+
+    function getTimeOfArrivalString(milliseconds){
+        const date = new Date();
+        date.setMilliseconds(date.getMilliseconds() + milliseconds)
+        const hour = ((date.getHours() + 11) % 12 + 1)
+        let minutes = date.getMinutes()
+        if(minutes < 10){
+            minutes = "0"+minutes;
+        }
+        const outputstr = `${hour}:${minutes}`
+        return outputstr;
     }
 
     useEffect(()=>{
@@ -180,14 +210,18 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
                     <Card.Body>
                         <Row className="Card-cell">
                             <Col className="Card-bold">Bus Arrives: </Col>
-                            <Col style={{ textAlign: 'right' }}> Still WIP</Col>
+                            <Col style={{ textAlign: 'right' }}> {getTimeOfArrivalString(startTime)} </Col>
                         </Row>
                         <Row className="Card-cell">
                             <Col className="Card-bold">Expected transit time</Col>
-                            <Col style={{ textAlign: 'right' }}>{minuteTimes/60000} minutes</Col>
+                            <Col style={{ textAlign: 'right' }}>{(minuteTimes/60000).toFixed(2)} minutes</Col>
                         </Row>
                         <Row className="Card-cell">
                             <Col className="Card-bold">Expected time of Arrival</Col>
+                            <Col style={{ textAlign: 'right' }}>{ getTimeOfArrivalString(startTime + minuteTimes) }</Col>
+                        </Row>
+                        <Row className="Card-cell">
+                            <Col className="Card-bold">Faster to walk:</Col>
                             <Col style={{ textAlign: 'right' }}>Still WIP</Col>
                         </Row>
                     </Card.Body>

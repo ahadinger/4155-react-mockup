@@ -1,7 +1,7 @@
 const BusImage = new Image(20, 20);
-BusImage.src = "/ic_bus_2019_white.png"
+BusImage.src = "./ic_bus_2019_white.png"
 const CircleImage = new Image(60, 60)
-CircleImage.src = "/circle_big_w_arrow_white.png"
+CircleImage.src = "./circle_big_w_arrow_white.png"
 
 
 export const getCorrectedBusStyle = (busLocation) => {
