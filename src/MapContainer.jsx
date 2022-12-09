@@ -8,7 +8,7 @@ import {
   TrafficLayerF,
 } from "@react-google-maps/api";
 
-import BusStop from "./images/small-circle-2.png";
+import BusStop from "./images/stop-marker.png";
 import stopsJson from "./stops.json";
 import greenPath from "./greenroute.json";
 import silverPath from "./silverroute.json";
@@ -35,6 +35,7 @@ export const MapContainer = ({ stopState, mapFilters}) => {
   const [map, setMap] = React.useState(null);
   const [loaded, setLoaded] = useState(false);
   const [selectedStop, setSelectedStop] = stopState;
+  const [timeForStop, setTimeForStop] = useState(false);
   const [locations, setLocations] = useState([]);
   const [markers, setMarkers] = useState({});
 
@@ -162,10 +163,15 @@ export const MapContainer = ({ stopState, mapFilters}) => {
     return points
   }
 
- 
+  async function getTimeForStop(stop){
+    const resp = await fetch(`http://198.71.63.67:4100/stops/timetostop/${stop["id"]}/`)
+    const json = await resp.json()
+    console.log(json)
+    return json
+  }
 
   const getStopsContent = (stops) =>
-    stops.map((item) => {
+    stops.map( (item) => {
       if(item.routeName == "Charter"){
         return;
       }
@@ -175,24 +181,28 @@ export const MapContainer = ({ stopState, mapFilters}) => {
             <MarkerF
               icon={{
                 url: BusStop,
-                scale: 0.05,
+                scaledSize: new window.google.maps.Size(50, 50),
               }}
               position={item.location}
-              onClick={() => {
+              onClick={async () => {
                 setSelectedStop(item);
+                {setTimeForStop(await getTimeForStop(item))}
               }}
             >
               {selectedStop === item ? (
                 <InfoWindowF
-                  onCloseClick={() => setSelectedStop(null)}
+                  onCloseClick={() => {
+                    setSelectedStop(null)
+                    setTimeForStop(null)
+                  }}
                   position={selectedStop.location}
                   options={{
                     shouldFocus: true,
                     minWidth: 350,
                     maxWidth: 350,
                   }}
-                >
-                  {showStopPopup(selectedStop)}
+                > 
+                  { showStopPopup(selectedStop, timeForStop)}
                 </InfoWindowF>
               ) : null}
             </MarkerF>
