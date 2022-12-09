@@ -16,6 +16,7 @@
     "esModuleInterop": true,  
     "plugins": [{ "name": "typescript-plugin-css-modules" }],
     "resolveJsonModule":true,
+    "baseUrl": "."
   },
   "exclude": [
     "node_modules",
@@ -29,5 +30,5 @@
   "include": ["src/"],
   "types": [
     "typePatches"
-  ]
+  ],
 }

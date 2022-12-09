@@ -8,7 +8,7 @@ import {
   TrafficLayerF,
 } from "@react-google-maps/api";
 
-import BusStop from "./images/small-circle-2.png";
+import BusStop from "./images/stop-marker.png";
 import stopsJson from "./stops.json";
 import greenPath from "./greenroute.json";
 import silverPath from "./silverroute.json";
@@ -168,11 +168,10 @@ export const MapContainer = ({ stopState, mapFilters}) => {
     const json = await resp.json()
     console.log(json)
     return json
-}
-
+  }
 
   const getStopsContent = (stops) =>
-    stops.map((item) => {
+    stops.map( (item) => {
       if(item.routeName == "Charter"){
         return;
       }
@@ -182,12 +181,12 @@ export const MapContainer = ({ stopState, mapFilters}) => {
             <MarkerF
               icon={{
                 url: BusStop,
-                scaledSize: new window.google.maps.Size(25, 25),
+                scaledSize: new window.google.maps.Size(50, 50),
               }}
               position={item.location}
               onClick={async () => {
                 setSelectedStop(item);
-                setTimeForStop(await getTimeForStop(item))
+                {setTimeForStop(await getTimeForStop(item))}
               }}
             >
               {selectedStop === item ? (
@@ -202,7 +201,7 @@ export const MapContainer = ({ stopState, mapFilters}) => {
                     minWidth: 350,
                     maxWidth: 350,
                   }}
-                >
+                > 
                   { showStopPopup(selectedStop, timeForStop)}
                 </InfoWindowF>
               ) : null}
