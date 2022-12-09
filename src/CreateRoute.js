@@ -16,7 +16,7 @@ export const CreateRouteButton = ({ mapFilters, setMapFilters}) => {
         <>
         {showCRPopup === false ? (
           <>
-          <div style={{padding, left, bottom, zIndex: 2, display: 'flex'}}>
+          <div style={{left, bottom, zIndex: 2}}>
             <MapFilterForm mapFilters={mapFilters} setMapFilters = {setMapFilters}/>
           </div>
           
@@ -33,7 +33,7 @@ export const CreateRouteButton = ({ mapFilters, setMapFilters}) => {
         ) : null}
         {showCRPopup === true ? (
           <>
-          <div style={{padding, left, bottom, zIndex: 2, display: 'flex'}}></div>
+          <div style={{left, bottom, zIndex: 2}}></div>
           <div style={{padding, right, bottom,position:'absolute', zIndex: 1, display: 'flex'}}>
           <Container style={{padding:'-10px'}}>
             <Container style={{padding:'-10px'}}>
