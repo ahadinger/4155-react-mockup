@@ -4,6 +4,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
+import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
 import { useQuery } from "react-query";
 import { getAllStops, getRoutes,fetchRoutes } from "./api";
@@ -28,6 +29,7 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
     const [minuteTimes,setTimes] =  useState(null)
     const [startTime,setStartTime] =  useState(null)
     const [distance,setDistance] =  useState(null)
+    const [warningMessage,setMessage] =  useState(null)
 
     const { data: res } = useQuery("getRouteStops", () => fetchRoutes())
 
@@ -55,6 +57,7 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
             updateStopsList(e.target.value)
         }
         setMapFilters([e.target.value])
+        setMessage(displayInformationAboutStop(e.target.value))
     }
 
     function handleStart(e) {
@@ -168,6 +171,48 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
         return outputstr;
     }
 
+    function areBussesRunning(){
+        const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+        const date = new Date();
+        let day = weekday[date.getDay()];
+        let hour = date.getHours()+1; 
+        if (day === "Saturday" || day === "Sunday") {
+            if(hour <= 9)
+                return false
+        } else {
+            if(hour <= 6)
+                return false
+        }
+        return true
+    }
+
+    function displayInformationAboutStop(id){
+        let message = ""
+        let footballroutes = ["22940", "3474"]
+        if(areBussesRunning() == false){
+            message = "Buses are not currently running."
+        }
+        else if(footballroutes.includes(id)){
+            message = "This route only runs when there is a Charlotte 49ers home football game. \n Information will be inacurrate if route is not currently running"
+        }
+        else if(id == "26308"){ //shopping shuttle
+            message = "This route runs Friday through Sunday from 5 p.m. to 9 p.m. \n Information will be inacurrate if route is not currently running"
+        }
+
+        else if(id == "35130"){ //greek village
+            message = "This route runs on a limited schedule weekdays from 7:30 a.m. to 5:30 p.m. \n Information will be inacurrate if route is not currently running"
+        }
+        else{
+            return null;
+        }
+        return (
+
+            <Alert key={"warning"} variant={"warning"}>
+                {message}
+            </Alert>
+        )
+    }
+
     useEffect(()=>{
         const startStop = document.querySelector("#startStop")
         const endStop = document.querySelector("#endStop")
@@ -187,6 +232,7 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
                             <option>Select a Route</option>
                             {route_list}
                             </Form.Select>
+                            {warningMessage}
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="start_stop">Starting at: </Form.Label>
