@@ -232,7 +232,7 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
                             <option>Select a Route</option>
                             {route_list}
                             </Form.Select>
-                            {warningMessage}
+                            
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label htmlFor="start_stop">Starting at: </Form.Label>
@@ -258,6 +258,7 @@ export const CreateRouteForm = ({ mapFilters, setMapFilters}) => {
                     <Button variant="success" onClick={handleSubmit}>Submit</Button>
                 </Form>
                 <br/>
+                {warningMessage}
                 <Card>
                     <Card.Body>
                         <Row className="Card-cell">
